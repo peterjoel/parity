@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `UtilError` enum in crate `ethcore_util`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, UtilError">
+
+    <title>ethcore_util::error::UtilError - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>ethcore_util</a>::<wbr><a href='index.html'>error</a></p><script>window.sidebarCurrent = {name: 'UtilError', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>ethcore_util</a>::<wbr><a href='index.html'>error</a>::<wbr><a class='enum' href=''>UtilError</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-82' class='srclink' href='../../src/ethcore_util/error.rs.html#33-56' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum UtilError {
+    Crypto(<a class='enum' href='../../ethcore_util/crypto/enum.CryptoError.html' title='ethcore_util::crypto::CryptoError'>CryptoError</a>),
+    StdIo(<a class='struct' href='../../ethcore_util/standard/io/struct.Error.html' title='ethcore_util::standard::io::Error'>Error</a>),
+    Io(<a class='enum' href='../../ethcore_util/io/enum.IoError.html' title='ethcore_util::io::IoError'>IoError</a>),
+    AddressParse(<a class='struct' href='https://doc.rust-lang.org/nightly/std/net/parser/struct.AddrParseError.html' title='std::net::parser::AddrParseError'>AddrParseError</a>),
+    AddressResolve(<a class='enum' href='../../ethcore_util/standard/option/enum.Option.html' title='ethcore_util::standard::option::Option'>Option</a>&lt;<a class='struct' href='../../ethcore_util/standard/io/struct.Error.html' title='ethcore_util::standard::io::Error'>Error</a>&gt;),
+    FromHex(<a class='enum' href='../../ethcore_util/standard/enum.FromHexError.html' title='ethcore_util::standard::FromHexError'>FromHexError</a>),
+    BaseData(<a class='enum' href='../../ethcore_util/error/enum.BaseDataError.html' title='ethcore_util::error::BaseDataError'>BaseDataError</a>),
+    Network(<a class='enum' href='../../ethcore_util/network/enum.NetworkError.html' title='ethcore_util::network::NetworkError'>NetworkError</a>),
+    Decoder(<a class='enum' href='../../ethcore_util/rlp/enum.DecoderError.html' title='ethcore_util::rlp::DecoderError'>DecoderError</a>),
+    SimpleString(<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>),
+    BadSize,
+}</pre><div class='docblock'><p>General error type which should be capable of representing all errors in ethcore.</p>
+</div><h2 class='variants'>Variants</h2>
+<table><tr><td id='variant.Crypto'><code>Crypto</code></td><td><div class='docblock'><p>Error concerning the crypto utility subsystem.</p>
+</div></td></tr><tr><td id='variant.StdIo'><code>StdIo</code></td><td><div class='docblock'><p>Error concerning the Rust standard library&#39;s IO subsystem.</p>
+</div></td></tr><tr><td id='variant.Io'><code>Io</code></td><td><div class='docblock'><p>Error concerning our IO utility subsystem.</p>
+</div></td></tr><tr><td id='variant.AddressParse'><code>AddressParse</code></td><td><div class='docblock'><p>Error concerning the network address parsing subsystem.</p>
+</div></td></tr><tr><td id='variant.AddressResolve'><code>AddressResolve</code></td><td><div class='docblock'><p>Error concerning the network address resolution subsystem.</p>
+</div></td></tr><tr><td id='variant.FromHex'><code>FromHex</code></td><td><div class='docblock'><p>Error concerning the hex conversion logic.</p>
+</div></td></tr><tr><td id='variant.BaseData'><code>BaseData</code></td><td><div class='docblock'><p>Error concerning the database abstraction logic.</p>
+</div></td></tr><tr><td id='variant.Network'><code>Network</code></td><td><div class='docblock'><p>Error concerning the network subsystem.</p>
+</div></td></tr><tr><td id='variant.Decoder'><code>Decoder</code></td><td><div class='docblock'><p>Error concerning the RLP decoder.</p>
+</div></td></tr><tr><td id='variant.SimpleString'><code>SimpleString</code></td><td><div class='docblock'><p>Miscellaneous error described by a string.</p>
+</div></td></tr><tr><td id='variant.BadSize'><code>BadSize</code></td><td><div class='docblock'><p>Error from a bad input size being given for the needed output.</p>
+</div></td></tr></table><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='enum' href='../../ethcore_util/standard/enum.FromHexError.html' title='ethcore_util::standard::FromHexError'>FromHexError</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='enum' href='../../ethcore_util/standard/enum.FromHexError.html' title='ethcore_util::standard::FromHexError'>FromHexError</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='enum' href='../../ethcore_util/error/enum.BaseDataError.html' title='ethcore_util::error::BaseDataError'>BaseDataError</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-1' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='enum' href='../../ethcore_util/error/enum.BaseDataError.html' title='ethcore_util::error::BaseDataError'>BaseDataError</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='enum' href='../../ethcore_util/network/enum.NetworkError.html' title='ethcore_util::network::NetworkError'>NetworkError</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-2' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='enum' href='../../ethcore_util/network/enum.NetworkError.html' title='ethcore_util::network::NetworkError'>NetworkError</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='../../ethcore_util/standard/io/struct.Error.html' title='ethcore_util::standard::io::Error'>Error</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-3' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='struct' href='../../ethcore_util/standard/io/struct.Error.html' title='ethcore_util::standard::io::Error'>Error</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='enum' href='../../ethcore_util/io/enum.IoError.html' title='ethcore_util::io::IoError'>IoError</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-4' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='enum' href='../../ethcore_util/io/enum.IoError.html' title='ethcore_util::io::IoError'>IoError</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='enum' href='../../ethcore_util/crypto/enum.CryptoError.html' title='ethcore_util::crypto::CryptoError'>CryptoError</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-5' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='enum' href='../../ethcore_util/crypto/enum.CryptoError.html' title='ethcore_util::crypto::CryptoError'>CryptoError</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/std/net/parser/struct.AddrParseError.html' title='std::net::parser::AddrParseError'>AddrParseError</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-6' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='struct' href='https://doc.rust-lang.org/nightly/std/net/parser/struct.AddrParseError.html' title='std::net::parser::AddrParseError'>AddrParseError</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='enum' href='../../ethcore_util/rlp/enum.DecoderError.html' title='ethcore_util::rlp::DecoderError'>DecoderError</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-7' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='enum' href='../../ethcore_util/rlp/enum.DecoderError.html' title='ethcore_util::rlp::DecoderError'>DecoderError</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html' title='core::convert::From'>From</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt; for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.from-8' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#method.from' class='fnname'>from</a>(err: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h4>
+</div><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='../../ethcore_util/standard/fmt/trait.Debug.html' title='ethcore_util::standard::fmt::Debug'>Debug</a> for <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='../../ethcore_util/standard/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='../../ethcore_util/standard/fmt/struct.Formatter.html' title='ethcore_util::standard::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='../../ethcore_util/standard/fmt/type.Result.html' title='ethcore_util::standard::fmt::Result'>Result</a></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "ethcore_util";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

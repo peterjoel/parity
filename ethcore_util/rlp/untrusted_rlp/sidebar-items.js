@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Prototype","RLP prototype"]],"struct":[["PayloadInfo","Stores basic information about item"],["UntrustedRlp","Data-oriented view onto rlp-slice."],["UntrustedRlpIterator","Iterator over rlp-slice list elements."]]});

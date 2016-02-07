@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ethcore` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ethcore">
+
+    <title>ethcore - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'></p><script>window.sidebarCurrent = {name: 'ethcore', ty: 'mod', relpath: '../'};</script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>ethcore</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-0' class='srclink' href='../src/ethcore/lib.rs.html#17-131' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Ethcore library</p>
+
+<h3 id='rust-version' class='section-header'><a href='#rust-version'>Rust version:</a></h3>
+<ul>
+<li>nightly</li>
+</ul>
+
+<h3 id='supported-platforms' class='section-header'><a href='#supported-platforms'>Supported platforms:</a></h3>
+<ul>
+<li>OSX</li>
+<li>Linux</li>
+</ul>
+
+<h3 id='building' class='section-header'><a href='#building'>Building:</a></h3>
+<ul>
+<li><p>Ubuntu 14.04 and later:</p>
+
+<pre><code class="language-bash"># install rocksdb
+add-apt-repository &quot;deb http://ppa.launchpad.net/giskou/librocksdb/ubuntu trusty main&quot;
+apt-get update
+apt-get install -y --force-yes librocksdb
+
+# install multirust
+curl -sf https://raw.githubusercontent.com/brson/multirust/master/blastoff.sh | sh -s -- --yes
+
+# install nightly and make it default
+multirust update nightly &amp;&amp; multirust default nightly
+
+# export rust LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/lib
+
+# download and build parity
+git clone https://github.com/ethcore/parity
+cd parity
+cargo build --release
+</code></pre></li>
+<li><p>OSX:</p>
+
+<pre><code class="language-bash"># install rocksdb &amp;&amp; multirust
+brew update
+brew install rocksdb
+brew install multirust
+
+# install nightly and make it default
+multirust update nightly &amp;&amp; multirust default nightly
+
+# export rust LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/lib
+
+# download and build parity
+git clone https://github.com/ethcore/parity
+cd parity
+cargo build --release
+</code></pre></li>
+</ul>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='block/index.html'
+                               title='ethcore::block'>block</a></td>
+                        <td class='docblock short'>
+                             <p>Blockchain block.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='block_queue/index.html'
+                               title='ethcore::block_queue'>block_queue</a></td>
+                        <td class='docblock short'>
+                             <p>A queue of blocks. Sits between network or other I/O and the BlockChain.
+Sorts them ready for blockchain insertion.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='blockchain/index.html'
+                               title='ethcore::blockchain'>blockchain</a></td>
+                        <td class='docblock short'>
+                             <p>Blockchain database.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='client/index.html'
+                               title='ethcore::client'>client</a></td>
+                        <td class='docblock short'>
+                             <p>Blockchain database client.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='error/index.html'
+                               title='ethcore::error'>error</a></td>
+                        <td class='docblock short'>
+                             <p>General error types for use in ethcore.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='ethereum/index.html'
+                               title='ethcore::ethereum'>ethereum</a></td>
+                        <td class='docblock short'>
+                             <p>Ethereum protocol module.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='header/index.html'
+                               title='ethcore::header'>header</a></td>
+                        <td class='docblock short'>
+                             <p>Block header.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='receipt/index.html'
+                               title='ethcore::receipt'>receipt</a></td>
+                        <td class='docblock short'>
+                             <p>Receipt</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='service/index.html'
+                               title='ethcore::service'>service</a></td>
+                        <td class='docblock short'>
+                             <p>Creates and registers client and network services.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='spec/index.html'
+                               title='ethcore::spec'>spec</a></td>
+                        <td class='docblock short'>
+                             <p>Parameters for a block chain.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='views/index.html'
+                               title='ethcore::views'>views</a></td>
+                        <td class='docblock short'>
+                             <p>Block oriented views onto rlp.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='macros' class='section-header'><a href="#macros">Macros</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='macro' href='macro.evm_test!.html'
+                               title='ethcore::evm_test!'>evm_test!</a></td>
+                        <td class='docblock short'>
+                             <p>Create tests by injecting different VM factories</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='macro' href='macro.evm_test_ignore!.html'
+                               title='ethcore::evm_test_ignore!'>evm_test_ignore!</a></td>
+                        <td class='docblock short'>
+                             <p>Create ignored tests by injecting different VM factories</p>
+
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "ethcore";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

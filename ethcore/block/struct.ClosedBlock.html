@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ClosedBlock` struct in crate `ethcore`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ClosedBlock">
+
+    <title>ethcore::block::ClosedBlock - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>ethcore</a>::<wbr><a href='index.html'>block</a></p><script>window.sidebarCurrent = {name: 'ClosedBlock', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>ethcore</a>::<wbr><a href='index.html'>block</a>::<wbr><a class='struct' href=''>ClosedBlock</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-105' class='srclink' href='../../src/ethcore/block.rs.html#159-162' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ClosedBlock&lt;'x, 'y&gt; {
+    // some fields omitted
+}</pre><div class='docblock'><p>Just like OpenBlock, except that we&#39;ve applied <code>Engine::on_close_block</code>, finished up the non-seal header fields,
+and collected the uncles.</p>
+
+<p>There is no function available to push a transaction. If you want that you&#39;ll need to <code>reopen()</code> it.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;'x, 'y&gt; <a class='struct' href='../../ethcore/block/struct.ClosedBlock.html' title='ethcore::block::ClosedBlock'>ClosedBlock</a>&lt;'x, 'y&gt;</code></h3><div class='impl-items'><h4 id='method.hash' class='method'><code>fn <a href='#method.hash' class='fnname'>hash</a>(&amp;self) -&gt; H256</code></h4>
+<div class='docblock'><p>Get the hash of the header without seal arguments.</p>
+</div><h4 id='method.seal' class='method'><code>fn <a href='#method.seal' class='fnname'>seal</a>(self, seal: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;Bytes&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='../../ethcore/block/struct.SealedBlock.html' title='ethcore::block::SealedBlock'>SealedBlock</a>, <a class='enum' href='../../ethcore/error/enum.BlockError.html' title='ethcore::error::BlockError'>BlockError</a>&gt;</code></h4>
+<div class='docblock'><p>Provide a valid seal in order to turn this into a <code>SealedBlock</code>.</p>
+
+<p>NOTE: This does not check the validity of <code>seal</code> with the engine.</p>
+</div><h4 id='method.reopen' class='method'><code>fn <a href='#method.reopen' class='fnname'>reopen</a>(self) -&gt; <a class='struct' href='../../ethcore/block/struct.OpenBlock.html' title='ethcore::block::OpenBlock'>OpenBlock</a>&lt;'x, 'y&gt;</code></h4>
+<div class='docblock'><p>Turn this back into an <code>OpenBlock</code>.</p>
+</div><h4 id='method.drain' class='method'><code>fn <a href='#method.drain' class='fnname'>drain</a>(self) -&gt; JournalDB</code></h4>
+<div class='docblock'><p>Drop this object and return the underlieing database.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;'x, 'y&gt; <a class='trait' href='../../ethcore/block/trait.IsBlock.html' title='ethcore::block::IsBlock'>IsBlock</a> for <a class='struct' href='../../ethcore/block/struct.ClosedBlock.html' title='ethcore::block::ClosedBlock'>ClosedBlock</a>&lt;'x, 'y&gt;</code></h3><div class='impl-items'><h4 id='method.block' class='method'><code>fn <a href='../../ethcore/block/trait.IsBlock.html#method.block' class='fnname'>block</a>(&amp;self) -&gt; &amp;<a class='struct' href='../../ethcore/block/struct.ExecutedBlock.html' title='ethcore::block::ExecutedBlock'>ExecutedBlock</a></code></h4>
+<h4 id='method.header' class='method'><code>fn <a href='../../ethcore/block/trait.IsBlock.html#method.header' class='fnname'>header</a>(&amp;self) -&gt; &amp;<a class='struct' href='../../ethcore/header/struct.Header.html' title='ethcore::header::Header'>Header</a></code></h4>
+<h4 id='method.state' class='method'><code>fn <a href='../../ethcore/block/trait.IsBlock.html#method.state' class='fnname'>state</a>(&amp;self) -&gt; &amp;State</code></h4>
+<h4 id='method.transactions' class='method'><code>fn <a href='../../ethcore/block/trait.IsBlock.html#method.transactions' class='fnname'>transactions</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;SignedTransaction&gt;</code></h4>
+<h4 id='method.receipts' class='method'><code>fn <a href='../../ethcore/block/trait.IsBlock.html#method.receipts' class='fnname'>receipts</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../ethcore/receipt/struct.Receipt.html' title='ethcore::receipt::Receipt'>Receipt</a>&gt;</code></h4>
+<h4 id='method.uncles' class='method'><code>fn <a href='../../ethcore/block/trait.IsBlock.html#method.uncles' class='fnname'>uncles</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../ethcore/header/struct.Header.html' title='ethcore::header::Header'>Header</a>&gt;</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "ethcore";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

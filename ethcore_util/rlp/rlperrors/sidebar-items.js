@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["DecoderError","Error concerning the RLP decoder."]]});

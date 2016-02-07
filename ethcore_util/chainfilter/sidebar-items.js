@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["BloomIndex","Represents bloom index in cache"],["ChainFilter","Should be used for search operations on blockchain."],["MemoryCache","In memory cache for blooms."]],"trait":[["FilterDataSource","Types implementing this trait should provide read access for bloom filters database."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["JournalDB","Implementation of the HashDB trait for a disk-backed database with a memory overlay and latent-removal semantics."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["is_low","Check if this is a \"low\" signature."],["is_low_s","Check if this is a \"low\" signature."],["is_valid","Check if each component of the signature is in range."],["recover","Recovers Public key from signed message hash."],["sign","Returns siganture of message hash."],["verify","Verify signature."]]});

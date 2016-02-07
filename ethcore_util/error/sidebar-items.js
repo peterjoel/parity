@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["BaseDataError","Error in database subsystem."],["UtilError","General error type which should be capable of representing all errors in ethcore."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["SemanticVersion","A version value with strict meaning. Use `to_u32` to convert to a simple integer."]]});

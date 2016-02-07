@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `BlockChain` struct in crate `ethcore`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, BlockChain">
+
+    <title>ethcore::blockchain::BlockChain - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>ethcore</a>::<wbr><a href='index.html'>blockchain</a></p><script>window.sidebarCurrent = {name: 'BlockChain', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>ethcore</a>::<wbr><a href='index.html'>blockchain</a>::<wbr><a class='struct' href=''>BlockChain</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-410' class='srclink' href='../../src/ethcore/blockchain.rs.html#141-161' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct BlockChain {
+    // some fields omitted
+}</pre><div class='docblock'><p>Structure providing fast access to blockchain data.</p>
+
+<p><strong>Does not do input data verification.</strong></p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../ethcore/blockchain/struct.BlockChain.html' title='ethcore::blockchain::BlockChain'>BlockChain</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(genesis: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, path: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/std/path/struct.Path.html' title='std::path::Path'>Path</a>) -&gt; <a class='struct' href='../../ethcore/blockchain/struct.BlockChain.html' title='ethcore::blockchain::BlockChain'>BlockChain</a></code></h4>
+<div class='docblock'><p>Create new instance of blockchain from given Genesis</p>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>ethcore_util</span> <span class='kw'>as</span> <span class='ident'>util</span>;
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>ethcore</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>env</span>;
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>str</span>::<span class='ident'>FromStr</span>;
+<span class='kw'>use</span> <span class='ident'>ethcore</span>::<span class='ident'>spec</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>ethcore</span>::<span class='ident'>blockchain</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>ethcore</span>::<span class='ident'>ethereum</span>;
+<span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>hash</span>::<span class='op'>*</span>;
+<span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>uint</span>::<span class='op'>*</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>spec</span> <span class='op'>=</span> <span class='ident'>ethereum</span>::<span class='ident'>new_frontier</span>();
+
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>dir</span> <span class='op'>=</span> <span class='ident'>env</span>::<span class='ident'>temp_dir</span>();
+    <span class='ident'>dir</span>.<span class='ident'>push</span>(<span class='ident'>H32</span>::<span class='ident'>random</span>().<span class='ident'>hex</span>());
+
+    <span class='kw'>let</span> <span class='ident'>bc</span> <span class='op'>=</span> <span class='ident'>BlockChain</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>spec</span>.<span class='ident'>genesis_block</span>(), <span class='kw-2'>&amp;</span><span class='ident'>dir</span>);
+
+    <span class='kw'>let</span> <span class='ident'>genesis_hash</span> <span class='op'>=</span> <span class='string'>&quot;d4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3&quot;</span>;
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>bc</span>.<span class='ident'>genesis_hash</span>(), <span class='ident'>H256</span>::<span class='ident'>from_str</span>(<span class='ident'>genesis_hash</span>).<span class='ident'>unwrap</span>());
+    <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bc</span>.<span class='ident'>is_known</span>(<span class='kw-2'>&amp;</span><span class='ident'>bc</span>.<span class='ident'>genesis_hash</span>()));
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>bc</span>.<span class='ident'>genesis_hash</span>(), <span class='ident'>bc</span>.<span class='ident'>block_hash</span>(<span class='number'>0</span>).<span class='ident'>unwrap</span>());
+}</pre>
+</div><h4 id='method.configure_cache' class='method'><code>fn <a href='#method.configure_cache' class='fnname'>configure_cache</a>(&amp;mut self, pref_cache_size: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, max_cache_size: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</code></h4>
+<div class='docblock'><p>Set the cache configuration.</p>
+</div><h4 id='method.tree_route' class='method'><code>fn <a href='#method.tree_route' class='fnname'>tree_route</a>(&amp;self, from: H256, to: H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../ethcore/blockchain/struct.TreeRoute.html' title='ethcore::blockchain::TreeRoute'>TreeRoute</a>&gt;</code></h4>
+<div class='docblock'><p>Returns a tree route between <code>from</code> and <code>to</code>, which is a tuple of:</p>
+
+<ul>
+<li><p>a vector of hashes of all blocks, ordered from <code>from</code> to <code>to</code>.</p></li>
+<li><p>common ancestor of these blocks.</p></li>
+<li><p>an index where best common ancestor would be</p></li>
+</ul>
+
+<p>1.) from newer to older</p>
+
+<ul>
+<li>bc: <code>A1 -&gt; A2 -&gt; A3 -&gt; A4 -&gt; A5</code></li>
+<li>from: A5, to: A4</li>
+<li><p>route:</p>
+
+<pre><code class="language-json">{ blocks: [A5], ancestor: A4, index: 1 }
+</code></pre></li>
+</ul>
+
+<p>2.) from older to newer</p>
+
+<ul>
+<li>bc: <code>A1 -&gt; A2 -&gt; A3 -&gt; A4 -&gt; A5</code></li>
+<li>from: A3, to: A4</li>
+<li><p>route:</p>
+
+<pre><code class="language-json">{ blocks: [A4], ancestor: A3, index: 0 }
+</code></pre></li>
+</ul>
+
+<p>3.) fork:</p>
+
+<ul>
+<li><p>bc:</p>
+
+<pre><code class="language-text">A1 -&gt; A2 -&gt; A3 -&gt; A4
+         -&gt; B3 -&gt; B4
+</code></pre></li>
+<li><p>from: B4, to: A4</p></li>
+<li><p>route:</p>
+
+<pre><code class="language-json">{ blocks: [B4, B3, A3, A4], ancestor: A2, index: 2 }
+</code></pre></li>
+</ul>
+</div><h4 id='method.insert_block' class='method'><code>fn <a href='#method.insert_block' class='fnname'>insert_block</a>(&amp;self, bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></h4>
+<div class='docblock'><p>Inserts the block into backing cache database.
+Expects the block to be valid and already verified.
+If the block is already known, does nothing.</p>
+</div><h4 id='method.is_known_transaction' class='method'><code>fn <a href='#method.is_known_transaction' class='fnname'>is_known_transaction</a>(&amp;self, hash: &amp;H256) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns true if transaction is known.</p>
+</div><h4 id='method.best_block_hash' class='method'><code>fn <a href='#method.best_block_hash' class='fnname'>best_block_hash</a>(&amp;self) -&gt; H256</code></h4>
+<div class='docblock'><p>Get best block hash.</p>
+</div><h4 id='method.best_block_number' class='method'><code>fn <a href='#method.best_block_number' class='fnname'>best_block_number</a>(&amp;self) -&gt; <a class='type' href='../../ethcore/header/type.BlockNumber.html' title='ethcore::header::BlockNumber'>BlockNumber</a></code></h4>
+<div class='docblock'><p>Get best block number.</p>
+</div><h4 id='method.best_block_total_difficulty' class='method'><code>fn <a href='#method.best_block_total_difficulty' class='fnname'>best_block_total_difficulty</a>(&amp;self) -&gt; U256</code></h4>
+<div class='docblock'><p>Get best block total difficulty.</p>
+</div><h4 id='method.log_blooms' class='method'><code>fn <a href='#method.log_blooms' class='fnname'>log_blooms</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;BlockLogBlooms&gt;</code></h4>
+<div class='docblock'><p>Get the transactions&#39; log blooms of a block.</p>
+</div><h4 id='method.cache_size' class='method'><code>fn <a href='#method.cache_size' class='fnname'>cache_size</a>(&amp;self) -&gt; <a class='struct' href='../../ethcore/blockchain/struct.CacheSize.html' title='ethcore::blockchain::CacheSize'>CacheSize</a></code></h4>
+<div class='docblock'><p>Get current cache size.</p>
+</div><h4 id='method.collect_garbage' class='method'><code>fn <a href='#method.collect_garbage' class='fnname'>collect_garbage</a>(&amp;self)</code></h4>
+<div class='docblock'><p>Ticks our cache system and throws out any old data.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../../ethcore/blockchain/trait.BlockProvider.html' title='ethcore::blockchain::BlockProvider'>BlockProvider</a> for <a class='struct' href='../../ethcore/blockchain/struct.BlockChain.html' title='ethcore::blockchain::BlockChain'>BlockChain</a></code></h3><div class='impl-items'><h4 id='method.is_known' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.is_known' class='fnname'>is_known</a>(&amp;self, hash: &amp;H256) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.block' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.block' class='fnname'>block</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Bytes&gt;</code></h4>
+<h4 id='method.block_details' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.block_details' class='fnname'>block_details</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;BlockDetails&gt;</code></h4>
+<h4 id='method.block_hash' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.block_hash' class='fnname'>block_hash</a>(&amp;self, index: <a class='type' href='../../ethcore/header/type.BlockNumber.html' title='ethcore::header::BlockNumber'>BlockNumber</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;H256&gt;</code></h4>
+<h4 id='method.block_header' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.block_header' class='fnname'>block_header</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../ethcore/header/struct.Header.html' title='ethcore::header::Header'>Header</a>&gt;</code></h4>
+<h4 id='method.uncles' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.uncles' class='fnname'>uncles</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../ethcore/header/struct.Header.html' title='ethcore::header::Header'>Header</a>&gt;&gt;</code></h4>
+<h4 id='method.uncle_hashes' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.uncle_hashes' class='fnname'>uncle_hashes</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;H256&gt;&gt;</code></h4>
+<h4 id='method.block_number' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.block_number' class='fnname'>block_number</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='type' href='../../ethcore/header/type.BlockNumber.html' title='ethcore::header::BlockNumber'>BlockNumber</a>&gt;</code></h4>
+<h4 id='method.transactions' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.transactions' class='fnname'>transactions</a>(&amp;self, hash: &amp;H256) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;SignedTransaction&gt;&gt;</code></h4>
+<h4 id='method.genesis_hash' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.genesis_hash' class='fnname'>genesis_hash</a>(&amp;self) -&gt; H256</code></h4>
+<h4 id='method.genesis_header' class='method'><code>fn <a href='../../ethcore/blockchain/trait.BlockProvider.html#method.genesis_header' class='fnname'>genesis_header</a>(&amp;self) -&gt; <a class='struct' href='../../ethcore/header/struct.Header.html' title='ethcore::header::Header'>Header</a></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "ethcore";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

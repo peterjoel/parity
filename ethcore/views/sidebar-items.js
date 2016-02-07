@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["AccountView","View onto transaction rlp."],["BlockView","View onto block rlp."],["HeaderView","View onto block header rlp."],["TransactionView","View onto transaction rlp."]]});

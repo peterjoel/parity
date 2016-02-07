@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["NetworkService","IO Service with networking `Message` defines a notification data type."]]});

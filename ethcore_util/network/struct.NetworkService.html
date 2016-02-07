@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `NetworkService` struct in crate `ethcore_util`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, NetworkService">
+
+    <title>ethcore_util::network::NetworkService - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>ethcore_util</a>::<wbr><a href='index.html'>network</a></p><script>window.sidebarCurrent = {name: 'NetworkService', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>ethcore_util</a>::<wbr><a href='index.html'>network</a>::<wbr><a class='struct' href=''>NetworkService</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-11087' class='srclink' href='../../src/ethcore_util/network/service.rs.html#27-31' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct NetworkService&lt;Message&gt; <span class='where'>where Message: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + 'static</span> {
+    // some fields omitted
+}</pre><div class='docblock'><p>IO Service with networking
+<code>Message</code> defines a notification data type.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;Message&gt; <a class='struct' href='../../ethcore_util/network/struct.NetworkService.html' title='ethcore_util::network::NetworkService'>NetworkService</a>&lt;Message&gt; <span class='where'>where Message: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + 'static</span></code></h3><div class='impl-items'><h4 id='method.start' class='method'><code>fn <a href='#method.start' class='fnname'>start</a>(config: <a class='struct' href='../../ethcore_util/network/struct.NetworkConfiguration.html' title='ethcore_util::network::NetworkConfiguration'>NetworkConfiguration</a>) -&gt; <a class='enum' href='../../ethcore_util/standard/result/enum.Result.html' title='ethcore_util::standard::result::Result'>Result</a>&lt;<a class='struct' href='../../ethcore_util/network/struct.NetworkService.html' title='ethcore_util::network::NetworkService'>NetworkService</a>&lt;Message&gt;, <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a>&gt;</code></h4>
+<div class='docblock'><p>Starts IO event loop</p>
+</div><h4 id='method.register_protocol' class='method'><code>fn <a href='#method.register_protocol' class='fnname'>register_protocol</a>(&amp;mut self, handler: <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='trait' href='../../ethcore_util/network/trait.NetworkProtocolHandler.html' title='ethcore_util::network::NetworkProtocolHandler'>NetworkProtocolHandler</a>&lt;Message&gt; + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Send.html' title='core::marker::Send'>Send</a> + <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html' title='core::marker::Sync'>Sync</a>&gt;, protocol: ProtocolId, versions: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='enum' href='../../ethcore_util/standard/result/enum.Result.html' title='ethcore_util::standard::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>, <a class='enum' href='../../ethcore_util/network/enum.NetworkError.html' title='ethcore_util::network::NetworkError'>NetworkError</a>&gt;</code></h4>
+<div class='docblock'><p>Regiter a new protocol handler with the event loop.</p>
+</div><h4 id='method.host_info' class='method'><code>fn <a href='#method.host_info' class='fnname'>host_info</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></h4>
+<div class='docblock'><p>Returns host identifier string as advertised to other peers</p>
+</div><h4 id='method.io' class='method'><code>fn <a href='#method.io' class='fnname'>io</a>(&amp;mut self) -&gt; &amp;mut <a class='struct' href='../../ethcore_util/io/struct.IoService.html' title='ethcore_util::io::IoService'>IoService</a>&lt;<a class='enum' href='../../ethcore_util/network/enum.NetworkIoMessage.html' title='ethcore_util::network::NetworkIoMessage'>NetworkIoMessage</a>&lt;Message&gt;&gt;</code></h4>
+<div class='docblock'><p>Returns underlying io service.</p>
+</div><h4 id='method.stats' class='method'><code>fn <a href='#method.stats' class='fnname'>stats</a>(&amp;self) -&gt; &amp;<a class='struct' href='../../ethcore_util/network/struct.NetworkStats.html' title='ethcore_util::network::NetworkStats'>NetworkStats</a></code></h4>
+<div class='docblock'><p>Returns underlying io service.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "ethcore_util";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

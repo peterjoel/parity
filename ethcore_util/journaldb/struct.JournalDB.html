@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `JournalDB` struct in crate `ethcore_util`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, JournalDB">
+
+    <title>ethcore_util::journaldb::JournalDB - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>ethcore_util</a>::<wbr><a href='index.html'>journaldb</a></p><script>window.sidebarCurrent = {name: 'JournalDB', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>ethcore_util</a>::<wbr><a href='index.html'>journaldb</a>::<wbr><a class='struct' href=''>JournalDB</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-7152' class='srclink' href='../../src/ethcore_util/journaldb.rs.html#34-38' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct JournalDB {
+    // some fields omitted
+}</pre><div class='docblock'><p>Implementation of the HashDB trait for a disk-backed database with a memory overlay
+and latent-removal semantics.</p>
+
+<p>Like OverlayDB, there is a memory overlay; <code>commit()</code> must be called in order to 
+write operations out to disk. Unlike OverlayDB, <code>remove()</code> operations do not take effect
+immediately. Rather some age (based on a linear but arbitrary metric) must pass before
+the removals actually take effect.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../ethcore_util/journaldb/struct.JournalDB.html' title='ethcore_util::journaldb::JournalDB'>JournalDB</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(backing: DB) -&gt; <a class='struct' href='../../ethcore_util/journaldb/struct.JournalDB.html' title='ethcore_util::journaldb::JournalDB'>JournalDB</a></code></h4>
+<div class='docblock'><p>Create a new instance given a <code>backing</code> database.</p>
+</div><h4 id='method.new_with_arc' class='method'><code>fn <a href='#method.new_with_arc' class='fnname'>new_with_arc</a>(backing: <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;DB&gt;) -&gt; <a class='struct' href='../../ethcore_util/journaldb/struct.JournalDB.html' title='ethcore_util::journaldb::JournalDB'>JournalDB</a></code></h4>
+<div class='docblock'><p>Create a new instance given a shared <code>backing</code> database.</p>
+</div><h4 id='method.is_empty' class='method'><code>fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Check if this database has any commits</p>
+</div><h4 id='method.commit' class='method'><code>fn <a href='#method.commit' class='fnname'>commit</a>(&amp;mut self, now: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>, id: &amp;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>, end: <a class='enum' href='../../ethcore_util/standard/option/enum.Option.html' title='ethcore_util::standard::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>, <a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>)</a>&gt;) -&gt; <a class='enum' href='../../ethcore_util/standard/result/enum.Result.html' title='ethcore_util::standard::result::Result'>Result</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>, <a class='enum' href='../../ethcore_util/error/enum.UtilError.html' title='ethcore_util::error::UtilError'>UtilError</a>&gt;</code></h4>
+<div class='docblock'><p>Commit all recent insert operations and historical removals from the old era
+to the backing database.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../ethcore_util/journaldb/struct.JournalDB.html' title='ethcore_util::journaldb::JournalDB'>JournalDB</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../ethcore_util/journaldb/struct.JournalDB.html' title='ethcore_util::journaldb::JournalDB'>JournalDB</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='../../ethcore_util/hashdb/trait.HashDB.html' title='ethcore_util::hashdb::HashDB'>HashDB</a> for <a class='struct' href='../../ethcore_util/journaldb/struct.JournalDB.html' title='ethcore_util::journaldb::JournalDB'>JournalDB</a></code></h3><div class='impl-items'><h4 id='method.keys' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.keys' class='fnname'>keys</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html' title='std::collections::hash::map::HashMap'>HashMap</a>&lt;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>&gt;</code></h4>
+<h4 id='method.lookup' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.lookup' class='fnname'>lookup</a>(&amp;self, key: &amp;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>) -&gt; <a class='enum' href='../../ethcore_util/standard/option/enum.Option.html' title='ethcore_util::standard::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>&gt;</code></h4>
+<h4 id='method.exists' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.exists' class='fnname'>exists</a>(&amp;self, key: &amp;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.insert' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.insert' class='fnname'>insert</a>(&amp;mut self, value: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a></code></h4>
+<h4 id='method.emplace' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.emplace' class='fnname'>emplace</a>(&amp;mut self, key: <a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>, value: <a class='type' href='../../ethcore_util/bytes/type.Bytes.html' title='ethcore_util::bytes::Bytes'>Bytes</a>)</code></h4>
+<h4 id='method.kill' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.kill' class='fnname'>kill</a>(&amp;mut self, key: &amp;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>)</code></h4>
+<h4 id='method.get' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.get' class='fnname'>get</a>(&amp;self, key: &amp;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>) -&gt; <a class='enum' href='../../ethcore_util/standard/option/enum.Option.html' title='ethcore_util::standard::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>&gt;</code></h4>
+<h4 id='method.contains' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.contains' class='fnname'>contains</a>(&amp;self, key: &amp;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.remove' class='method'><code>fn <a href='../../ethcore_util/hashdb/trait.HashDB.html#method.remove' class='fnname'>remove</a>(&amp;mut self, key: &amp;<a class='struct' href='../../ethcore_util/hash/struct.H256.html' title='ethcore_util::hash::H256'>H256</a>)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "ethcore_util";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

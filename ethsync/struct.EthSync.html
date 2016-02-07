@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `EthSync` struct in crate `ethsync`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, EthSync">
+
+    <title>ethsync::EthSync - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>ethsync</a></p><script>window.sidebarCurrent = {name: 'EthSync', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>ethsync</a>::<wbr><a class='struct' href=''>EthSync</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-1050' class='srclink' href='../src/ethsync/lib.rs.html#71-76' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct EthSync {
+    // some fields omitted
+}</pre><div class='docblock'><p>Ethereum network protocol handler</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../ethsync/struct.EthSync.html' title='ethsync::EthSync'>EthSync</a></code></h3><div class='impl-items'><h4 id='method.register' class='method'><code>fn <a href='#method.register' class='fnname'>register</a>(service: &amp;mut NetworkService&lt;SyncMessage&gt;, chain: <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;Client&gt;) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../ethsync/struct.EthSync.html' title='ethsync::EthSync'>EthSync</a>&gt;</code></h4>
+<div class='docblock'><p>Creates and register protocol with the network service</p>
+</div><h4 id='method.status' class='method'><code>fn <a href='#method.status' class='fnname'>status</a>(&amp;self) -&gt; <a class='struct' href='../ethsync/struct.SyncStatus.html' title='ethsync::SyncStatus'>SyncStatus</a></code></h4>
+<div class='docblock'><p>Get sync status</p>
+</div><h4 id='method.stop' class='method'><code>fn <a href='#method.stop' class='fnname'>stop</a>(&amp;mut self, io: &amp;mut NetworkContext&lt;SyncMessage&gt;)</code></h4>
+<div class='docblock'><p>Stop sync</p>
+</div><h4 id='method.restart' class='method'><code>fn <a href='#method.restart' class='fnname'>restart</a>(&amp;mut self, io: &amp;mut NetworkContext&lt;SyncMessage&gt;)</code></h4>
+<div class='docblock'><p>Restart sync</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl NetworkProtocolHandler&lt;SyncMessage&gt; for <a class='struct' href='../ethsync/struct.EthSync.html' title='ethsync::EthSync'>EthSync</a></code></h3><div class='impl-items'><h4 id='method.initialize' class='method'><code>fn <a href='#method.initialize' class='fnname'>initialize</a>(&amp;self, io: &amp;NetworkContext&lt;SyncMessage&gt;)</code></h4>
+<h4 id='method.read' class='method'><code>fn <a href='#method.read' class='fnname'>read</a>(&amp;self, io: &amp;NetworkContext&lt;SyncMessage&gt;, peer: &amp;PeerId, packet_id: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>, data: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>)</code></h4>
+<h4 id='method.connected' class='method'><code>fn <a href='#method.connected' class='fnname'>connected</a>(&amp;self, io: &amp;NetworkContext&lt;SyncMessage&gt;, peer: &amp;PeerId)</code></h4>
+<h4 id='method.disconnected' class='method'><code>fn <a href='#method.disconnected' class='fnname'>disconnected</a>(&amp;self, io: &amp;NetworkContext&lt;SyncMessage&gt;, peer: &amp;PeerId)</code></h4>
+<h4 id='method.timeout' class='method'><code>fn <a href='#method.timeout' class='fnname'>timeout</a>(&amp;self, io: &amp;NetworkContext&lt;SyncMessage&gt;, _timer: TimerToken)</code></h4>
+<h4 id='method.message' class='method'><code>fn <a href='#method.message' class='fnname'>message</a>(&amp;self, _io: &amp;NetworkContext&lt;Message&gt;, _message: &amp;Message)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "ethsync";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

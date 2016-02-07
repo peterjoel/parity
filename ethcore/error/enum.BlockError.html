@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `BlockError` enum in crate `ethcore`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, BlockError">
+
+    <title>ethcore::error::BlockError - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>ethcore</a>::<wbr><a href='index.html'>error</a></p><script>window.sidebarCurrent = {name: 'BlockError', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>ethcore</a>::<wbr><a href='index.html'>error</a>::<wbr><a class='enum' href=''>BlockError</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-1280' class='srclink' href='../../src/ethcore/error.rs.html#94-149' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum BlockError {
+    TooManyUncles(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>&gt;),
+    ExtraDataOutOfBounds(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>&gt;),
+    InvalidSealArity(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>&gt;),
+    TooMuchGasUsed(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;U256&gt;),
+    InvalidUnclesHash(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;H256&gt;),
+    UncleTooOld(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;<a class='type' href='../../ethcore/header/type.BlockNumber.html' title='ethcore::header::BlockNumber'>BlockNumber</a>&gt;),
+    UncleIsBrother(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;<a class='type' href='../../ethcore/header/type.BlockNumber.html' title='ethcore::header::BlockNumber'>BlockNumber</a>&gt;),
+    UncleInChain(H256),
+    UncleParentNotInChain(H256),
+    InvalidStateRoot(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;H256&gt;),
+    InvalidGasUsed(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;U256&gt;),
+    InvalidTransactionsRoot(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;H256&gt;),
+    DifficultyOutOfBounds(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;U256&gt;),
+    InvalidDifficulty(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;U256&gt;),
+    MismatchedH256SealElement(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;H256&gt;),
+    InvalidProofOfWork(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;U256&gt;),
+    InvalidGasLimit(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;U256&gt;),
+    InvalidReceiptsRoot(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;H256&gt;),
+    InvalidTimestamp(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>&gt;),
+    InvalidLogBloom(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;LogBloom&gt;),
+    InvalidParentHash(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;H256&gt;),
+    InvalidNumber(<a class='struct' href='../../ethcore/error/struct.Mismatch.html' title='ethcore::error::Mismatch'>Mismatch</a>&lt;<a class='type' href='../../ethcore/header/type.BlockNumber.html' title='ethcore::header::BlockNumber'>BlockNumber</a>&gt;),
+    RidiculousNumber(<a class='struct' href='../../ethcore/error/struct.OutOfBounds.html' title='ethcore::error::OutOfBounds'>OutOfBounds</a>&lt;<a class='type' href='../../ethcore/header/type.BlockNumber.html' title='ethcore::header::BlockNumber'>BlockNumber</a>&gt;),
+    UnknownParent(H256),
+    UnknownUncleParent(H256),
+}</pre><div class='docblock'><p>Errors concerning block processing.</p>
+</div><h2 class='variants'>Variants</h2>
+<table><tr><td id='variant.TooManyUncles'><code>TooManyUncles</code></td><td><div class='docblock'><p>Block has too many uncles.</p>
+</div></td></tr><tr><td id='variant.ExtraDataOutOfBounds'><code>ExtraDataOutOfBounds</code></td><td><div class='docblock'><p>Extra data is of an invalid length.</p>
+</div></td></tr><tr><td id='variant.InvalidSealArity'><code>InvalidSealArity</code></td><td><div class='docblock'><p>Seal is incorrect format.</p>
+</div></td></tr><tr><td id='variant.TooMuchGasUsed'><code>TooMuchGasUsed</code></td><td><div class='docblock'><p>Block has too much gas used.</p>
+</div></td></tr><tr><td id='variant.InvalidUnclesHash'><code>InvalidUnclesHash</code></td><td><div class='docblock'><p>Uncles hash in header is invalid.</p>
+</div></td></tr><tr><td id='variant.UncleTooOld'><code>UncleTooOld</code></td><td><div class='docblock'><p>An uncle is from a generation too old.</p>
+</div></td></tr><tr><td id='variant.UncleIsBrother'><code>UncleIsBrother</code></td><td><div class='docblock'><p>An uncle is from the same generation as the block.</p>
+</div></td></tr><tr><td id='variant.UncleInChain'><code>UncleInChain</code></td><td><div class='docblock'><p>An uncle is already in the chain.</p>
+</div></td></tr><tr><td id='variant.UncleParentNotInChain'><code>UncleParentNotInChain</code></td><td><div class='docblock'><p>An uncle has a parent not in the chain.</p>
+</div></td></tr><tr><td id='variant.InvalidStateRoot'><code>InvalidStateRoot</code></td><td><div class='docblock'><p>State root header field is invalid.</p>
+</div></td></tr><tr><td id='variant.InvalidGasUsed'><code>InvalidGasUsed</code></td><td><div class='docblock'><p>Gas used header field is invalid.</p>
+</div></td></tr><tr><td id='variant.InvalidTransactionsRoot'><code>InvalidTransactionsRoot</code></td><td><div class='docblock'><p>Transactions root header field is invalid.</p>
+</div></td></tr><tr><td id='variant.DifficultyOutOfBounds'><code>DifficultyOutOfBounds</code></td><td><div class='docblock'><p>Difficulty is out of range; this can be used as an looser error prior to getting a definitive
+value for difficulty. This error needs only provide bounds of which it is out.</p>
+</div></td></tr><tr><td id='variant.InvalidDifficulty'><code>InvalidDifficulty</code></td><td><div class='docblock'><p>Difficulty header field is invalid; this is a strong error used after getting a definitive
+value for difficulty (which is provided).</p>
+</div></td></tr><tr><td id='variant.MismatchedH256SealElement'><code>MismatchedH256SealElement</code></td><td><div class='docblock'><p>Seal element of type H256 (max_hash for Ethash, but could be something else for
+other seal engines) is out of bounds.</p>
+</div></td></tr><tr><td id='variant.InvalidProofOfWork'><code>InvalidProofOfWork</code></td><td><div class='docblock'><p>Proof-of-work aspect of seal, which we assume is a 256-bit value, is invalid.</p>
+</div></td></tr><tr><td id='variant.InvalidGasLimit'><code>InvalidGasLimit</code></td><td><div class='docblock'><p>Gas limit header field is invalid.</p>
+</div></td></tr><tr><td id='variant.InvalidReceiptsRoot'><code>InvalidReceiptsRoot</code></td><td><div class='docblock'><p>Receipts trie root header field is invalid.</p>
+</div></td></tr><tr><td id='variant.InvalidTimestamp'><code>InvalidTimestamp</code></td><td><div class='docblock'><p>Timestamp header field is invalid.</p>
+</div></td></tr><tr><td id='variant.InvalidLogBloom'><code>InvalidLogBloom</code></td><td><div class='docblock'><p>Log bloom header field is invalid.</p>
+</div></td></tr><tr><td id='variant.InvalidParentHash'><code>InvalidParentHash</code></td><td><div class='docblock'><p>Parent hash field of header is invalid; this is an invalid error indicating a logic flaw in the codebase.
+TODO: remove and favour an assert!/panic!.</p>
+</div></td></tr><tr><td id='variant.InvalidNumber'><code>InvalidNumber</code></td><td><div class='docblock'><p>Number field of header is invalid.</p>
+</div></td></tr><tr><td id='variant.RidiculousNumber'><code>RidiculousNumber</code></td><td><div class='docblock'><p>Block number isn&#39;t sensible.</p>
+</div></td></tr><tr><td id='variant.UnknownParent'><code>UnknownParent</code></td><td><div class='docblock'><p>Parent given is unknown.</p>
+</div></td></tr><tr><td id='variant.UnknownUncleParent'><code>UnknownUncleParent</code></td><td><div class='docblock'><p>Uncle parent given is unknown.</p>
+</div></td></tr></table><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> for <a class='enum' href='../../ethcore/error/enum.BlockError.html' title='ethcore::error::BlockError'>BlockError</a></code></h3><div class='impl-items'></div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> for <a class='enum' href='../../ethcore/error/enum.BlockError.html' title='ethcore::error::BlockError'>BlockError</a></code></h3><div class='impl-items'><h4 id='method.eq' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../../ethcore/error/enum.BlockError.html' title='ethcore::error::BlockError'>BlockError</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ne' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../../ethcore/error/enum.BlockError.html' title='ethcore::error::BlockError'>BlockError</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='enum' href='../../ethcore/error/enum.BlockError.html' title='ethcore::error::BlockError'>BlockError</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "ethcore";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

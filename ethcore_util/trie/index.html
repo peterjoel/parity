@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `trie` mod in crate `ethcore_util`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, trie">
+
+    <title>ethcore_util::trie - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>ethcore_util</a></p><script>window.sidebarCurrent = {name: 'trie', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>ethcore_util</a>::<wbr><a class='mod' href=''>trie</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-7907' class='srclink' href='../../src/ethcore_util/trie/mod.rs.html#17-41' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Trie interface and implementation.</p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Reexports</a></h2>
+<table><tr><td><code>pub use self::<a class='mod' href='../../ethcore_util/trie/trietraits/index.html' title='ethcore_util::trie::trietraits'>trietraits</a>::*;</code></td></tr><tr><td><code>pub use self::<a class='mod' href='../../ethcore_util/trie/standardmap/index.html' title='ethcore_util::trie::standardmap'>standardmap</a>::*;</code></td></tr><tr><td><code>pub use self::<a class='mod' href='../../ethcore_util/trie/triedbmut/index.html' title='ethcore_util::trie::triedbmut'>triedbmut</a>::*;</code></td></tr><tr><td><code>pub use self::<a class='mod' href='../../ethcore_util/trie/triedb/index.html' title='ethcore_util::trie::triedb'>triedb</a>::*;</code></td></tr><tr><td><code>pub use self::<a class='mod' href='../../ethcore_util/trie/sectriedbmut/index.html' title='ethcore_util::trie::sectriedbmut'>sectriedbmut</a>::*;</code></td></tr><tr><td><code>pub use self::<a class='mod' href='../../ethcore_util/trie/sectriedb/index.html' title='ethcore_util::trie::sectriedb'>sectriedb</a>::*;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='journal/index.html'
+                               title='ethcore_util::trie::journal'>journal</a></td>
+                        <td class='docblock short'>
+                             <p>Export the journal module.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='node/index.html'
+                               title='ethcore_util::trie::node'>node</a></td>
+                        <td class='docblock short'>
+                             <p>Export the node module.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='sectriedb/index.html'
+                               title='ethcore_util::trie::sectriedb'>sectriedb</a></td>
+                        <td class='docblock short'>
+                             <p>Export the sectriedb module.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='sectriedbmut/index.html'
+                               title='ethcore_util::trie::sectriedbmut'>sectriedbmut</a></td>
+                        <td class='docblock short'>
+                             <p>Export the sectriedbmut module.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='standardmap/index.html'
+                               title='ethcore_util::trie::standardmap'>standardmap</a></td>
+                        <td class='docblock short'>
+                             <p>Export the standardmap module.
+Key-value datastore with a modified Merkle tree.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='triedb/index.html'
+                               title='ethcore_util::trie::triedb'>triedb</a></td>
+                        <td class='docblock short'>
+                             <p>Export the triedb module.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='triedbmut/index.html'
+                               title='ethcore_util::trie::triedbmut'>triedbmut</a></td>
+                        <td class='docblock short'>
+                             <p>Export the triedbmut module.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='mod' href='trietraits/index.html'
+                               title='ethcore_util::trie::trietraits'>trietraits</a></td>
+                        <td class='docblock short'>
+                             <p>Export the trietraits module.</p>
+
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "ethcore_util";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>
