@@ -92,7 +92,7 @@ fn setup_log(init: &str) {
 #[cfg(feature = "rpc")]
 fn setup_rpc_server(client: Arc<Client>, sync: Arc<EthSync>, url: &str) {
 	use rpc::v1::*;
-	
+
 	let mut server = rpc::HttpServer::new(1);
 	server.add_delegate(Web3Client::new().to_delegate());
 	server.add_delegate(EthClient::new(client.clone()).to_delegate());
@@ -190,7 +190,11 @@ impl Informant {
 		let report = client.report();
 		let sync_info = sync.status();
 
-		if let (_, &Some(ref last_cache_info), &Some(ref last_report)) = (self.chain_info.read().unwrap().deref(), self.cache_info.read().unwrap().deref(), self.report.read().unwrap().deref()) {
+		let _last_chain_info = self.chain_info.read().unwrap().deref();
+		let last_cache_info = self.cache_info.read().unwrap().deref();
+		let last_report = self.report.read().unwrap().deref();
+
+		if let (&Some(ref last_cache_info), &Some(ref last_report)) = (last_cache_info, last_report) {
 			println!("[ {} {} ]---[ {} blk/s | {} tx/s | {} gas/s  //··· {}/{} peers, {} downloaded, {}+{} queued ···//  {} ({}) bl  {} ({}) ex ]",
 				chain_info.best_block_number,
 				chain_info.best_block_hash,
@@ -226,7 +230,7 @@ struct ClientIoHandler {
 }
 
 impl IoHandler<NetSyncMessage> for ClientIoHandler {
-	fn initialize(&self, io: &IoContext<NetSyncMessage>) { 
+	fn initialize(&self, io: &IoContext<NetSyncMessage>) {
 		io.register_timer(INFO_TIMER, 5000).expect("Error registering timer");
 	}
 
