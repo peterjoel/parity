@@ -16,18 +16,18 @@
 
 use std::sync::*;
 use std::mem;
-use std::thread::{JoinHandle, self};
+use std::thread::{self, JoinHandle};
 use std::sync::atomic::{AtomicBool, Ordering as AtomicOrdering};
 use crossbeam::sync::chase_lev;
 use io::service::{HandlerId, IoChannel, IoContext};
-use io::{IoHandler};
+use io::IoHandler;
 
 pub enum WorkType<Message> {
 	Readable,
 	Writable,
 	Hup,
 	Timeout,
-	Message(Message)
+	Message(Message),
 }
 
 pub struct Work<Message> {
@@ -47,29 +47,40 @@ pub struct Worker {
 
 impl Worker {
 	/// Creates a new worker instance.
-	pub fn new<Message>(index: usize, 
-						stealer: chase_lev::Stealer<Work<Message>>, 
-						channel: IoChannel<Message>,
-						wait: Arc<Condvar>,
-						wait_mutex: Arc<Mutex<()>>) -> Worker 
-						where Message: Send + Sync + Clone + 'static {
+	pub fn new<Message>(index: usize,
+	                    stealer: chase_lev::Stealer<Work<Message>>,
+	                    channel: IoChannel<Message>,
+	                    wait: Arc<Condvar>,
+	                    wait_mutex: Arc<Mutex<()>>)
+	                    -> Worker
+		where Message: Send + Sync + Clone + 'static
+	{
 		let deleting = Arc::new(AtomicBool::new(false));
 		let mut worker = Worker {
 			thread: None,
 			wait: wait.clone(),
 			deleting: deleting.clone(),
 		};
-		worker.thread = Some(thread::Builder::new().name(format!("IO Worker #{}", index)).spawn(
-			move || Worker::work_loop(stealer, channel.clone(), wait, wait_mutex.clone(), deleting))
-			.expect("Error creating worker thread"));
+		worker.thread = Some(thread::Builder::new()
+			                     .name(format!("IO Worker #{}", index))
+			                     .spawn(move || {
+				                     Worker::work_loop(stealer,
+				                                       channel.clone(),
+				                                       wait,
+				                                       wait_mutex.clone(),
+				                                       deleting)
+				                    })
+			                     .expect("Error creating worker thread"));
 		worker
 	}
 
 	fn work_loop<Message>(stealer: chase_lev::Stealer<Work<Message>>,
-						channel: IoChannel<Message>, wait: Arc<Condvar>, 
-						wait_mutex: Arc<Mutex<()>>, 
-						deleting: Arc<AtomicBool>) 
-						where Message: Send + Sync + Clone + 'static {
+	                      channel: IoChannel<Message>,
+	                      wait: Arc<Condvar>,
+	                      wait_mutex: Arc<Mutex<()>>,
+	                      deleting: Arc<AtomicBool>)
+		where Message: Send + Sync + Clone + 'static
+	{
 		while !deleting.load(AtomicOrdering::Relaxed) {
 			{
 				let lock = wait_mutex.lock().unwrap();
@@ -84,11 +95,13 @@ impl Worker {
 		}
 	}
 
-	fn do_work<Message>(work: Work<Message>, channel: IoChannel<Message>) where Message: Send + Sync + Clone + 'static {
+	fn do_work<Message>(work: Work<Message>, channel: IoChannel<Message>)
+		where Message: Send + Sync + Clone + 'static
+	{
 		match work.work_type {
 			WorkType::Readable => {
 				work.handler.stream_readable(&IoContext::new(channel, work.handler_id), work.token);
-			},
+			}
 			WorkType::Writable => {
 				work.handler.stream_writable(&IoContext::new(channel, work.handler_id), work.token);
 			}

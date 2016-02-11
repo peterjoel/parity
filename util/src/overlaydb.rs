@@ -34,7 +34,7 @@ use rocksdb::{DB, Writable, IteratorMode};
 /// such operations may be flushed to the disk-backed DB with `commit()` or discarded with
 /// `revert()`.
 ///
-/// `lookup()` and `contains()` maintain normal behaviour - all `insert()` and `remove()` 
+/// `lookup()` and `contains()` maintain normal behaviour - all `insert()` and `remove()`
 /// queries have an immediate effect in terms of these functions.
 pub struct OverlayDB {
 	overlay: MemoryDB,
@@ -43,11 +43,16 @@ pub struct OverlayDB {
 
 impl OverlayDB {
 	/// Create a new instance of OverlayDB given a `backing` database.
-	pub fn new(backing: DB) -> OverlayDB { Self::new_with_arc(Arc::new(backing)) }
+	pub fn new(backing: DB) -> OverlayDB {
+		Self::new_with_arc(Arc::new(backing))
+	}
 
 	/// Create a new instance of OverlayDB given a `backing` database.
 	pub fn new_with_arc(backing: Arc<DB>) -> OverlayDB {
-		OverlayDB{ overlay: MemoryDB::new(), backing: backing }
+		OverlayDB {
+			overlay: MemoryDB::new(),
+			backing: backing,
+		}
 	}
 
 	/// Create a new instance of OverlayDB with an anonymous temporary database.
@@ -60,7 +65,7 @@ impl OverlayDB {
 	/// Commit all memory operations to the backing database.
 	///
 	/// Returns either an error or the number of items changed in the backing database.
-	/// 
+	///
 	/// Will return an error if the number of `kill()`s ever exceeds the number of
 	/// `insert()`s for any key. This will leave the database in an undeterminate
 	/// state. Don't ever let it happen.
@@ -97,7 +102,11 @@ impl OverlayDB {
 						if total_rc < 0 {
 							return Err(From::from(BaseDataError::NegativelyReferencedHash));
 						}
-						deletes += if self.put_payload(&key, (back_value, total_rc as u32)) {1} else {0};
+						deletes += if self.put_payload(&key, (back_value, total_rc as u32)) {
+							1
+						} else {
+							0
+						};
 					}
 					None => {
 						if rc < 0 {
@@ -134,16 +143,19 @@ impl OverlayDB {
 	///   assert!(!m.exists(&bar));		// bar is gone.
 	/// }
 	/// ```
-	pub fn revert(&mut self) { self.overlay.clear(); }
+	pub fn revert(&mut self) {
+		self.overlay.clear();
+	}
 
 	/// Get the refs and value of the given key.
 	fn payload(&self, key: &H256) -> Option<(Bytes, u32)> {
-		self.backing.get(&key.bytes())
-			.expect("Low-level database error. Some issue with your hard disk?")
-			.map(|d| {
-				let r = Rlp::new(d.deref());
-				(r.at(1).as_val(), r.at(0).as_val())
-			})
+		self.backing
+		    .get(&key.bytes())
+		    .expect("Low-level database error. Some issue with your hard disk?")
+		    .map(|d| {
+			    let r = Rlp::new(d.deref());
+			    (r.at(1).as_val(), r.at(0).as_val())
+			   })
 	}
 
 	/// Get the refs and value of the given key.
@@ -152,10 +164,14 @@ impl OverlayDB {
 			let mut s = RlpStream::new_list(2);
 			s.append(&payload.1);
 			s.append(&payload.0);
-			self.backing.put(&key.bytes(), s.as_raw()).expect("Low-level database error. Some issue with your hard disk?");
+			self.backing
+			    .put(&key.bytes(), s.as_raw())
+			    .expect("Low-level database error. Some issue with your hard disk?");
 			false
 		} else {
-			self.backing.delete(&key.bytes()).expect("Low-level database error. Some issue with your hard disk?");
+			self.backing
+			    .delete(&key.bytes())
+			    .expect("Low-level database error. Some issue with your hard disk?");
 			true
 		}
 	}
@@ -189,13 +205,12 @@ impl HashDB for OverlayDB {
 						let (d, rc) = x;
 						if rc as i32 + memrc > 0 {
 							Some(&self.overlay.denote(key, d).0)
-						}
-						else {
+						} else {
 							None
 						}
 					}
 					// Replace above match arm with this once https://github.com/rust-lang/rust/issues/15287 is done.
-					//Some((d, rc)) if rc + memrc > 0 => Some(d),
+					// Some((d, rc)) if rc + memrc > 0 => Some(d),
 					_ => None,
 				}
 			}
@@ -215,15 +230,21 @@ impl HashDB for OverlayDB {
 						rc as i32 + memrc > 0
 					}
 					// Replace above match arm with this once https://github.com/rust-lang/rust/issues/15287 is done.
-					//Some((d, rc)) if rc + memrc > 0 => true,
+					// Some((d, rc)) if rc + memrc > 0 => true,
 					_ => false,
 				}
 			}
 		}
 	}
-	fn insert(&mut self, value: &[u8]) -> H256 { self.overlay.insert(value) }
-	fn emplace(&mut self, key: H256, value: Bytes) { self.overlay.emplace(key, value); }
-	fn kill(&mut self, key: &H256) { self.overlay.kill(key); }
+	fn insert(&mut self, value: &[u8]) -> H256 {
+		self.overlay.insert(value)
+	}
+	fn emplace(&mut self, key: H256, value: Bytes) {
+		self.overlay.emplace(key, value);
+	}
+	fn kill(&mut self, key: &H256) {
+		self.overlay.kill(key);
+	}
 }
 
 #[test]
@@ -310,7 +331,7 @@ fn overlaydb_complex() {
 	assert_eq!(trie.lookup(&hfoo).unwrap(), b"foo");
 	trie.kill(&hfoo);		// zero ref - delete
 	assert_eq!(trie.lookup(&hfoo), None);
-	trie.commit().unwrap();	// 
+	trie.commit().unwrap();	//
 	assert_eq!(trie.lookup(&hfoo), None);
 }
 

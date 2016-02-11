@@ -34,9 +34,9 @@ extern crate target_info;
 #[cfg(feature = "rpc")]
 extern crate ethcore_rpc as rpc;
 
-use std::net::{SocketAddr};
+use std::net::SocketAddr;
 use std::env;
-use rlog::{LogLevelFilter};
+use rlog::LogLevelFilter;
 use env_logger::LogBuilder;
 use ctrlc::CtrlC;
 use util::*;
@@ -102,8 +102,7 @@ fn setup_rpc_server(client: Arc<Client>, sync: Arc<EthSync>, url: &str) {
 }
 
 #[cfg(not(feature = "rpc"))]
-fn setup_rpc_server(_client: Arc<Client>, _sync: Arc<EthSync>, _url: &str) {
-}
+fn setup_rpc_server(_client: Arc<Client>, _sync: Arc<EthSync>, _url: &str) {}
 
 fn main() {
 	let args: Args = Args::docopt().decode().unwrap_or_else(|e| e.exit());
@@ -117,12 +116,18 @@ This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
 
 By Wood/Paronyan/Kotewicz/Drwięga/Volf.\
-", env!("CARGO_PKG_VERSION"), Target::arch(), Target::env(), Target::os());
+",
+		         env!("CARGO_PKG_VERSION"),
+		         Target::arch(),
+		         Target::env(),
+		         Target::os());
 		return;
 	}
 
 	setup_log(&args.flag_logging);
-	unsafe { ::fdlimit::raise_fd_limit(); }
+	unsafe {
+		::fdlimit::raise_fd_limit();
+	}
 
 	let spec = match args.flag_chain.as_ref() {
 		"frontier" | "mainnet" => ethereum::new_frontier(),
@@ -138,8 +143,10 @@ By Wood/Paronyan/Kotewicz/Drwięga/Volf.\
 	net_settings.boot_nodes = init_nodes;
 	match args.flag_address {
 		None => {
-			net_settings.listen_address = SocketAddr::from_str(args.flag_listen_address.as_ref()).expect("Invalid listen address given with --listen-address");
-			net_settings.public_address = SocketAddr::from_str(args.flag_public_address.as_ref()).expect("Invalid public address given with --public-address");
+			net_settings.listen_address = SocketAddr::from_str(args.flag_listen_address.as_ref())
+				.expect("Invalid listen address given with --listen-address");
+			net_settings.public_address = SocketAddr::from_str(args.flag_public_address.as_ref())
+				.expect("Invalid public address given with --public-address");
 		}
 		Some(ref a) => {
 			net_settings.public_address = SocketAddr::from_str(a.as_ref()).expect("Invalid listen/public address given with --address");
@@ -153,12 +160,18 @@ By Wood/Paronyan/Kotewicz/Drwięga/Volf.\
 	if args.flag_jsonrpc {
 		setup_rpc_server(service.client(), sync.clone(), &args.flag_jsonrpc_url);
 	}
-	let io_handler  = Arc::new(ClientIoHandler { client: service.client(), info: Default::default(), sync: sync });
+	let io_handler = Arc::new(ClientIoHandler {
+		client: service.client(),
+		info: Default::default(),
+		sync: sync,
+	});
 	service.io().register_handler(io_handler).expect("Error registering IO handler");
 
 	let exit = Arc::new(Condvar::new());
 	let e = exit.clone();
-	CtrlC::set_handler(move || { e.notify_all(); });
+	CtrlC::set_handler(move || {
+		e.notify_all();
+	});
 	let mutex = Mutex::new(());
 	let _ = exit.wait(mutex.lock().unwrap()).unwrap();
 }
@@ -190,29 +203,26 @@ impl Informant {
 		let report = client.report();
 		let sync_info = sync.status();
 
-		let _last_chain_info = self.chain_info.read().unwrap().deref();
-		let last_cache_info = self.cache_info.read().unwrap().deref();
-		let last_report = self.report.read().unwrap().deref();
-
-		if let (&Some(ref last_cache_info), &Some(ref last_report)) = (last_cache_info, last_report) {
+		if let (_, &Some(ref last_cache_info), &Some(ref last_report)) = (self.chain_info.read().unwrap().deref(),
+		                                                                  self.cache_info.read().unwrap().deref(),
+		                                                                  self.report.read().unwrap().deref()) {
 			println!("[ {} {} ]---[ {} blk/s | {} tx/s | {} gas/s  //··· {}/{} peers, {} downloaded, {}+{} queued ···//  {} ({}) bl  {} ({}) ex ]",
-				chain_info.best_block_number,
-				chain_info.best_block_hash,
-				(report.blocks_imported - last_report.blocks_imported) / dur,
-				(report.transactions_applied - last_report.transactions_applied) / dur,
-				(report.gas_processed - last_report.gas_processed) / From::from(dur),
+			         chain_info.best_block_number,
+			         chain_info.best_block_hash,
+			         (report.blocks_imported - last_report.blocks_imported) / dur,
+			         (report.transactions_applied - last_report.transactions_applied) / dur,
+			         (report.gas_processed - last_report.gas_processed) / From::from(dur),
 
-				sync_info.num_active_peers,
-				sync_info.num_peers,
-				sync_info.blocks_received,
-				queue_info.unverified_queue_size,
-				queue_info.verified_queue_size,
+			         sync_info.num_active_peers,
+			         sync_info.num_peers,
+			         sync_info.blocks_received,
+			         queue_info.unverified_queue_size,
+			         queue_info.verified_queue_size,
 
-				cache_info.blocks,
-				cache_info.blocks as isize - last_cache_info.blocks as isize,
-				cache_info.block_details,
-				cache_info.block_details as isize - last_cache_info.block_details as isize
-			);
+			         cache_info.blocks,
+			         cache_info.blocks as isize - last_cache_info.blocks as isize,
+			         cache_info.block_details,
+			         cache_info.block_details as isize - last_cache_info.block_details as isize);
 		}
 
 		*self.chain_info.write().unwrap().deref_mut() = Some(chain_info);
@@ -243,5 +253,4 @@ impl IoHandler<NetSyncMessage> for ClientIoHandler {
 
 /// Parity needs at least 1 test to generate coverage reports correctly.
 #[test]
-fn if_works() {
-}
+fn if_works() {}

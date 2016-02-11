@@ -17,20 +17,24 @@
 use std::sync::*;
 use error::*;
 use network::{NetworkProtocolHandler, NetworkConfiguration};
-use network::error::{NetworkError};
+use network::error::NetworkError;
 use network::host::{Host, NetworkIoMessage, ProtocolId};
-use network::stats::{NetworkStats};
+use network::stats::NetworkStats;
 use io::*;
 
 /// IO Service with networking
 /// `Message` defines a notification data type.
-pub struct NetworkService<Message> where Message: Send + Sync + Clone + 'static {
+pub struct NetworkService<Message>
+	where Message: Send + Sync + Clone + 'static
+{
 	io_service: IoService<NetworkIoMessage<Message>>,
 	host_info: String,
-	stats: Arc<NetworkStats>
+	stats: Arc<NetworkStats>,
 }
 
-impl<Message> NetworkService<Message> where Message: Send + Sync + Clone + 'static {
+impl<Message> NetworkService<Message>
+    where Message: Send + Sync + Clone + 'static
+{
 	/// Starts IO event loop
 	pub fn start(config: NetworkConfiguration) -> Result<NetworkService<Message>, UtilError> {
 		let mut io_service = try!(IoService::<NetworkIoMessage<Message>>::start());
@@ -47,7 +51,11 @@ impl<Message> NetworkService<Message> where Message: Send + Sync + Clone + 'stat
 	}
 
 	/// Regiter a new protocol handler with the event loop.
-	pub fn register_protocol(&mut self, handler: Arc<NetworkProtocolHandler<Message>+Send + Sync>, protocol: ProtocolId, versions: &[u8]) -> Result<(), NetworkError> {
+	pub fn register_protocol(&mut self,
+	                         handler: Arc<NetworkProtocolHandler<Message> + Send + Sync>,
+	                         protocol: ProtocolId,
+	                         versions: &[u8])
+	                         -> Result<(), NetworkError> {
 		try!(self.io_service.send_message(NetworkIoMessage::AddHandler {
 			handler: handler,
 			protocol: protocol,
@@ -71,4 +79,3 @@ impl<Message> NetworkService<Message> where Message: Send + Sync + Clone + 'stat
 		&self.stats
 	}
 }
-

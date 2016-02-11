@@ -15,51 +15,51 @@
 // along with Parity.  If not, see <http://www.gnu.org/licenses/>.
 
 //! Multilevel blockchain bloom filter.
-//! 
+//!
 //! ```
 //! extern crate ethcore_util as util;
 //! use std::str::FromStr;
 //! use util::chainfilter::*;
 //! use util::sha3::*;
 //! use util::hash::*;
-//! 
-//! fn main() {
-//!		let (index_size, bloom_levels) = (16, 3);
-//!		let mut cache = MemoryCache::new();
-//!		
-//!		let address = Address::from_str("ef2d6d194084c2de36e0dabfce45d046b37d1106").unwrap();
-//!		
-//!		// borrow cache for reading inside the scope
-//!		let modified_blooms = {
-//!			let filter = ChainFilter::new(&cache, index_size, bloom_levels);	
-//!			let block_number = 39;
-//!			let mut bloom = H2048::new();
-//!			bloom.shift_bloomed(&address.sha3());
-//!			filter.add_bloom(&bloom, block_number)
-//!		};
-//!		
-//!		// number of updated blooms is equal number of levels
-//!		assert_eq!(modified_blooms.len(), bloom_levels as usize);
 //!
-//!		// lets inserts modified blooms into the cache
-//!		cache.insert_blooms(modified_blooms);
-//!		
-//!		// borrow cache for another reading operations
-//!		{
-//!			let filter = ChainFilter::new(&cache, index_size, bloom_levels);	
-//!			let blocks = filter.blocks_with_address(&address, 10, 40);
-//!			assert_eq!(blocks.len(), 1);	
-//!			assert_eq!(blocks[0], 39);
-//!		}
+//! fn main() {
+//! 		let (index_size, bloom_levels) = (16, 3);
+//! 		let mut cache = MemoryCache::new();
+//!
+//! 		let address = Address::from_str("ef2d6d194084c2de36e0dabfce45d046b37d1106").unwrap();
+//!
+//! 		// borrow cache for reading inside the scope
+//! 		let modified_blooms = {
+//! 			let filter = ChainFilter::new(&cache, index_size, bloom_levels);
+//! 			let block_number = 39;
+//! 			let mut bloom = H2048::new();
+//! 			bloom.shift_bloomed(&address.sha3());
+//! 			filter.add_bloom(&bloom, block_number)
+//! 		};
+//!
+//! 		// number of updated blooms is equal number of levels
+//! 		assert_eq!(modified_blooms.len(), bloom_levels as usize);
+//!
+//! 		// lets inserts modified blooms into the cache
+//! 		cache.insert_blooms(modified_blooms);
+//!
+//! 		// borrow cache for another reading operations
+//! 		{
+//! 			let filter = ChainFilter::new(&cache, index_size, bloom_levels);
+//! 			let blocks = filter.blocks_with_address(&address, 10, 40);
+//! 			assert_eq!(blocks.len(), 1);
+//! 			assert_eq!(blocks[0], 39);
+//! 		}
 //! }
 //! ```
 //!
-use std::collections::{HashMap};
+use std::collections::HashMap;
 use hash::*;
 use sha3::*;
 
 /// Represents bloom index in cache
-/// 
+///
 /// On cache level 0, every block bloom is represented by different index.
 /// On higher cache levels, multiple block blooms are represented by one
 /// index. Their `BloomIndex` can be created from block number and given level.
@@ -88,7 +88,7 @@ pub trait FilterDataSource {
 }
 
 /// In memory cache for blooms.
-/// 
+///
 /// Stores all blooms in HashMap, which indexes them by `BloomIndex`.
 pub struct MemoryCache {
 	blooms: HashMap<BloomIndex, H2048>,
@@ -101,7 +101,7 @@ impl MemoryCache {
 	}
 
 	/// inserts all blooms into cache
-	/// 
+	///
 	/// if bloom at given index already exists, overwrites it
 	pub fn insert_blooms(&mut self, blooms: HashMap<BloomIndex, H2048>) {
 		self.blooms.extend(blooms);
@@ -123,10 +123,11 @@ pub struct ChainFilter<'a, D>
 	level_sizes: Vec<usize>,
 }
 
-impl<'a, D> ChainFilter<'a, D> where D: FilterDataSource
+impl<'a, D> ChainFilter<'a, D>
+    where D: FilterDataSource
 {
 	/// Creates new filter instance.
-	/// 
+	///
 	/// Borrows `FilterDataSource` for reading.
 	pub fn new(data_source: &'a D, index_size: usize, levels: u8) -> Self {
 		if levels == 0 {
@@ -137,19 +138,20 @@ impl<'a, D> ChainFilter<'a, D> where D: FilterDataSource
 			data_source: data_source,
 			index_size: index_size,
 			// 0 level has always a size of 1
-			level_sizes: vec![1]
+			level_sizes: vec![1],
 		};
 
 		// cache level sizes, so we do not have to calculate them all the time
 		// eg. if levels == 3, index_size = 16
 		// level_sizes = [1, 16, 256]
-		let additional: Vec<usize> = (1..).into_iter()
-			.scan(1, |acc, _| {
-				*acc = *acc * index_size; 
-				Some(*acc)
-			})
-			.take(levels as usize - 1)
-			.collect();
+		let additional: Vec<usize> = (1..)
+			                             .into_iter()
+			                             .scan(1, |acc, _| {
+				                             *acc = *acc * index_size;
+				                             Some(*acc)
+				                            })
+			                             .take(levels as usize - 1)
+			                             .collect();
 		filter.level_sizes.extend(additional);
 
 		filter
@@ -169,7 +171,7 @@ impl<'a, D> ChainFilter<'a, D> where D: FilterDataSource
 	}
 
 	/// return bloom which are dependencies for given index
-	/// 
+	///
 	/// bloom indexes are ordered from lowest to highest
 	fn lower_level_bloom_indexes(&self, index: &BloomIndex) -> Vec<BloomIndex> {
 		// this is the lowest level
@@ -194,21 +196,29 @@ impl<'a, D> ChainFilter<'a, D> where D: FilterDataSource
 	}
 
 	/// internal function which does bloom search recursively
-	fn blocks(&self, bloom: &H2048, from_block: usize, to_block: usize, level: u8, offset: usize) -> Option<Vec<usize>> {
+	fn blocks(&self,
+	          bloom: &H2048,
+	          from_block: usize,
+	          to_block: usize,
+	          level: u8,
+	          offset: usize)
+	          -> Option<Vec<usize>> {
 		let index = self.bloom_index(offset, level);
 
 		match self.data_source.bloom_at_index(&index) {
 			None => return None,
-			Some(level_bloom) => match level {
-				// if we are on the lowest level
-				// take the value, exclude to_block
-				0 if offset < to_block => return Some(vec![offset]),
-				// return None if it is is equal to to_block
-				0 => return None,
-				// return None if current level doesnt contain given bloom
-				_ if !level_bloom.contains(bloom) => return None,
-				// continue processing && go down
-				_ => ()
+			Some(level_bloom) => {
+				match level {
+					// if we are on the lowest level
+					// take the value, exclude to_block
+					0 if offset < to_block => return Some(vec![offset]),
+					// return None if it is is equal to to_block
+					0 => return None,
+					// return None if current level doesnt contain given bloom
+					_ if !level_bloom.contains(bloom) => return None,
+					// continue processing && go down
+					_ => (),
+				}
 			}
 		};
 
@@ -312,21 +322,33 @@ impl<'a, D> ChainFilter<'a, D> where D: FilterDataSource
 	}
 
 	/// Returns numbers of blocks that may contain Address.
-	pub fn blocks_with_address(&self, address: &Address, from_block: usize, to_block: usize) -> Vec<usize> {
+	pub fn blocks_with_address(&self,
+	                           address: &Address,
+	                           from_block: usize,
+	                           to_block: usize)
+	                           -> Vec<usize> {
 		let mut bloom = H2048::new();
 		bloom.shift_bloomed(&address.sha3());
 		self.blocks_with_bloom(&bloom, from_block, to_block)
 	}
 
 	/// Returns numbers of blocks that may contain Topic.
-	pub fn blocks_with_topic(&self, topic: &H256, from_block: usize, to_block: usize) -> Vec<usize> {
+	pub fn blocks_with_topic(&self,
+	                         topic: &H256,
+	                         from_block: usize,
+	                         to_block: usize)
+	                         -> Vec<usize> {
 		let mut bloom = H2048::new();
 		bloom.shift_bloomed(&topic.sha3());
 		self.blocks_with_bloom(&bloom, from_block, to_block)
 	}
 
 	/// Returns numbers of blocks that may log bloom.
-	pub fn blocks_with_bloom(&self, bloom: &H2048, from_block: usize, to_block: usize) -> Vec<usize> {
+	pub fn blocks_with_bloom(&self,
+	                         bloom: &H2048,
+	                         from_block: usize,
+	                         to_block: usize)
+	                         -> Vec<usize> {
 		let mut result = vec![];
 		// lets start from highest level
 		let max_level = self.max_level();
@@ -426,7 +448,9 @@ mod tests {
 		let bloom_levels = 3;
 
 		let mut cache = MemoryCache::new();
-		let topic = H256::from_str("8d936b1bd3fc635710969ccfba471fb17d598d9d1971b538dd712e1e4b4f4dba").unwrap();
+		let topic = H256::from_str("8d936b1bd3fc635710969ccfba471fb17d598d9d1971b538dd712e1e4b4f4\
+		                            dba")
+			            .unwrap();
 
 		let modified_blooms = {
 			let filter = ChainFilter::new(&cache, index_size, bloom_levels);

@@ -50,7 +50,9 @@ impl Signature {
 
 	/// Convert transaction to R, S and V components.
 	pub fn to_rsv(&self) -> (U256, U256, u8) {
-		(U256::from(&self.as_slice()[0..32]), U256::from(&self.as_slice()[32..64]), self[64])
+		(U256::from(&self.as_slice()[0..32]),
+		 U256::from(&self.as_slice()[32..64]),
+		 self[64])
 	}
 }
 
@@ -147,7 +149,9 @@ impl KeyPair {
 	}
 
 	/// Sign a message with our secret key.
-	pub fn sign(&self, message: &H256) -> Result<Signature, CryptoError> { ec::sign(&self.secret, message) }
+	pub fn sign(&self, message: &H256) -> Result<Signature, CryptoError> {
+		ec::sign(&self.secret, message)
+	}
 }
 
 /// EC functions
@@ -156,7 +160,7 @@ pub mod ec {
 	use uint::*;
 	use standard::*;
 	use crypto::*;
-	use crypto::{self};
+	use crypto;
 
 	/// Recovers Public key from signed message hash.
 	pub fn recover(signature: &Signature, message: &H256) -> Result<Public, CryptoError> {
@@ -166,7 +170,7 @@ pub mod ec {
 		let publ = try!(context.recover(&try!(Message::from_slice(&message)), &rsig));
 		let serialized = publ.serialize_vec(context, false);
 		let p: Public = Public::from_slice(&serialized[1..65]);
-		//TODO: check if it's the zero key and fail if so.
+		// TODO: check if it's the zero key and fail if so.
 		Ok(p)
 	}
 	/// Returns siganture of message hash.
@@ -182,14 +186,21 @@ pub mod ec {
 		signature[64] = rec_id.to_i32() as u8;
 
 		let (_, s, v) = signature.to_rsv();
-		let secp256k1n = U256::from_str("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141").unwrap();
+		let secp256k1n = U256::from_str("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8c\
+		                                 d0364141")
+			                 .unwrap();
 		if !is_low_s(&s) {
-			signature = super::Signature::from_rsv(&H256::from_slice(&signature[0..32]), &H256::from(secp256k1n - s), v ^ 1);
+			signature = super::Signature::from_rsv(&H256::from_slice(&signature[0..32]),
+			                                       &H256::from(secp256k1n - s),
+			                                       v ^ 1);
 		}
 		Ok(signature)
 	}
 	/// Verify signature.
-	pub fn verify(public: &Public, signature: &Signature, message: &H256) -> Result<bool, CryptoError> {
+	pub fn verify(public: &Public,
+	              signature: &Signature,
+	              message: &H256)
+	              -> Result<bool, CryptoError> {
 		use secp256k1::*;
 		let context = &crypto::SECP256K1;
 		let rsig = try!(RecoverableSignature::from_compact(context, &signature[0..64], try!(RecoveryId::from_i32(signature[64] as i32))));
@@ -203,37 +214,41 @@ pub mod ec {
 		match context.verify(&try!(Message::from_slice(&message)), &sig, &publ) {
 			Ok(_) => Ok(true),
 			Err(Error::IncorrectSignature) => Ok(false),
-			Err(x) => Err(<CryptoError as From<Error>>::from(x))
+			Err(x) => Err(CryptoError::from(x)),
 		}
 	}
 
 	/// Check if this is a "low" signature.
 	pub fn is_low(sig: &Signature) -> bool {
-		H256::from_slice(&sig[32..64]) <= h256_from_hex("7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0")
+		H256::from_slice(&sig[32..64]) <=
+		h256_from_hex("7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0")
 	}
 
 	/// Check if this is a "low" signature.
 	pub fn is_low_s(s: &U256) -> bool {
-		s <= &U256::from_str("7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0").unwrap()
+		s <=
+		&U256::from_str("7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0").unwrap()
 	}
 
 	/// Check if each component of the signature is in range.
 	pub fn is_valid(sig: &Signature) -> bool {
 		sig[64] <= 1 &&
-			H256::from_slice(&sig[0..32]) < h256_from_hex("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141") &&
-			H256::from_slice(&sig[32..64]) < h256_from_hex("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141") &&
-			H256::from_slice(&sig[32..64]) >= h256_from_u64(1) &&
-			H256::from_slice(&sig[0..32]) >= h256_from_u64(1)
+		H256::from_slice(&sig[0..32]) <
+		h256_from_hex("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141") &&
+		H256::from_slice(&sig[32..64]) <
+		h256_from_hex("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141") &&
+		H256::from_slice(&sig[32..64]) >= h256_from_u64(1) &&
+		H256::from_slice(&sig[0..32]) >= h256_from_u64(1)
 	}
 }
 
 /// ECDH functions
 pub mod ecdh {
 	use crypto::*;
-	use crypto::{self};
+	use crypto;
 
 	/// Agree on a shared secret
-	pub fn agree(secret: &Secret, public: &Public, ) -> Result<Secret, CryptoError> {
+	pub fn agree(secret: &Secret, public: &Public) -> Result<Secret, CryptoError> {
 		use secp256k1::*;
 		let context = &crypto::SECP256K1;
 		let mut pdata: [u8; 65] = [4u8; 65];
@@ -256,10 +271,10 @@ pub mod ecies {
 
 	/// Encrypt a message with a public key
 	pub fn encrypt(public: &Public, plain: &[u8]) -> Result<Bytes, CryptoError> {
-		use ::rcrypto::digest::Digest;
-		use ::rcrypto::sha2::Sha256;
-		use ::rcrypto::hmac::Hmac;
-		use ::rcrypto::mac::Mac;
+		use rcrypto::digest::Digest;
+		use rcrypto::sha2::Sha256;
+		use rcrypto::hmac::Hmac;
+		use rcrypto::mac::Mac;
 		let r = try!(KeyPair::create());
 		let z = try!(ecdh::agree(r.secret(), public));
 		let mut key = [0u8; 32];
@@ -292,13 +307,13 @@ pub mod ecies {
 
 	/// Decrypt a message with a secret key
 	pub fn decrypt(secret: &Secret, encrypted: &[u8]) -> Result<Bytes, CryptoError> {
-		use ::rcrypto::digest::Digest;
-		use ::rcrypto::sha2::Sha256;
-		use ::rcrypto::hmac::Hmac;
-		use ::rcrypto::mac::Mac;
+		use rcrypto::digest::Digest;
+		use rcrypto::sha2::Sha256;
+		use rcrypto::hmac::Hmac;
+		use rcrypto::mac::Mac;
 
 		let meta_len = 1 + 64 + 16 + 32;
-		if encrypted.len() < meta_len  || encrypted[0] < 2 || encrypted[0] > 4 {
+		if encrypted.len() < meta_len || encrypted[0] < 2 || encrypted[0] > 4 {
 			return Err(CryptoError::InvalidMessage); //invalid message: publickey
 		}
 
@@ -315,10 +330,10 @@ pub mod ecies {
 		hasher.result(&mut mkey);
 
 		let clen = encrypted.len() - meta_len;
-		let cipher_with_iv = &e[64..(64+16+clen)];
+		let cipher_with_iv = &e[64..(64 + 16 + clen)];
 		let cipher_iv = &cipher_with_iv[0..16];
 		let cipher_no_iv = &cipher_with_iv[16..];
-		let msg_mac = &e[(64+16+clen)..];
+		let msg_mac = &e[(64 + 16 + clen)..];
 
 		// Verify tag
 		let mut hmac = Hmac::new(Sha256::new(), &mkey);
@@ -335,8 +350,8 @@ pub mod ecies {
 	}
 
 	fn kdf(secret: &Secret, s1: &[u8], dest: &mut [u8]) {
-		use ::rcrypto::digest::Digest;
-		use ::rcrypto::sha2::Sha256;
+		use rcrypto::digest::Digest;
+		use rcrypto::sha2::Sha256;
 		let mut hasher = Sha256::new();
 		// SEC/ISO/Shoup specify counter size SHOULD be equivalent
 		// to size of hash output, however, it also notes that
@@ -366,13 +381,19 @@ pub mod aes {
 	/// Encrypt a message
 	pub fn encrypt(k: &[u8], iv: &[u8], plain: &[u8], dest: &mut [u8]) {
 		let mut encryptor = CtrMode::new(AesSafe128Encryptor::new(k), iv.to_vec());
-		encryptor.encrypt(&mut RefReadBuffer::new(plain), &mut RefWriteBuffer::new(dest), true).expect("Invalid length or padding");
+		encryptor.encrypt(&mut RefReadBuffer::new(plain),
+		                  &mut RefWriteBuffer::new(dest),
+		                  true)
+		         .expect("Invalid length or padding");
 	}
 
 	/// Decrypt a message
 	pub fn decrypt(k: &[u8], iv: &[u8], encrypted: &[u8], dest: &mut [u8]) {
 		let mut encryptor = CtrMode::new(AesSafe128Encryptor::new(k), iv.to_vec());
-		encryptor.decrypt(&mut RefReadBuffer::new(encrypted), &mut RefWriteBuffer::new(dest), true).expect("Invalid length or padding");
+		encryptor.decrypt(&mut RefReadBuffer::new(encrypted),
+		                  &mut RefWriteBuffer::new(dest),
+		                  true)
+		         .expect("Invalid length or padding");
 	}
 }
 
@@ -396,14 +417,24 @@ mod tests {
 
 	#[test]
 	fn test_invalid_key() {
-		assert!(KeyPair::from_secret(h256_from_hex("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")).is_err());
-		assert!(KeyPair::from_secret(h256_from_hex("0000000000000000000000000000000000000000000000000000000000000000")).is_err());
-		assert!(KeyPair::from_secret(h256_from_hex("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141")).is_err());
+		assert!(KeyPair::from_secret(h256_from_hex("fffffffffffffffffffffffffffffffffffffffffff\
+		                                            fffffffffffffffffffff"))
+			        .is_err());
+		assert!(KeyPair::from_secret(h256_from_hex("0000000000000000000000000000000000000000000\
+		                                            000000000000000000000"))
+			        .is_err());
+		assert!(KeyPair::from_secret(h256_from_hex("fffffffffffffffffffffffffffffffebaaedce6af4\
+		                                            8a03bbfd25e8cd0364141"))
+			        .is_err());
 	}
 
 	#[test]
 	fn test_key() {
-		let pair = KeyPair::from_secret(h256_from_hex("6f7b0d801bc7b5ce7bbd930b84fd0369b3eb25d09be58d64ba811091046f3aa2")).unwrap();
-		assert_eq!(pair.public().hex(), "101b3ef5a4ea7a1c7928e24c4c75fd053c235d7b80c22ae5c03d145d0ac7396e2a4ffff9adee3133a7b05044a5cee08115fd65145e5165d646bde371010d803c");
+		let pair = KeyPair::from_secret(h256_from_hex("6f7b0d801bc7b5ce7bbd930b84fd0369b3eb25d09\
+		                                               be58d64ba811091046f3aa2"))
+			           .unwrap();
+		assert_eq!(pair.public().hex(),
+		           "101b3ef5a4ea7a1c7928e24c4c75fd053c235d7b80c22ae5c03d145d0ac7396e2a4ffff9adee3\
+		            133a7b05044a5cee08115fd65145e5165d646bde371010d803c");
 	}
 }

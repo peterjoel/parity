@@ -55,7 +55,7 @@ extern crate rand;
 use std::ops::*;
 use std::sync::*;
 use ethcore::client::Client;
-use util::network::{NetworkProtocolHandler, NetworkService, NetworkContext, PeerId};
+use util::network::{NetworkContext, NetworkProtocolHandler, NetworkService, PeerId};
 use util::io::TimerToken;
 use chain::ChainSync;
 use ethcore::service::SyncMessage;
@@ -73,7 +73,7 @@ pub struct EthSync {
 	/// Shared blockchain client. TODO: this should evetually become an IPC endpoint
 	chain: Arc<Client>,
 	/// Sync strategy
-	sync: RwLock<ChainSync>
+	sync: RwLock<ChainSync>,
 }
 
 pub use self::chain::SyncStatus;
@@ -111,7 +111,7 @@ impl NetworkProtocolHandler<SyncMessage> for EthSync {
 	}
 
 	fn read(&self, io: &NetworkContext<SyncMessage>, peer: &PeerId, packet_id: u8, data: &[u8]) {
-		self.sync.write().unwrap().on_packet(&mut NetSyncIo::new(io, self.chain.deref()) , *peer, packet_id, data);
+		self.sync.write().unwrap().on_packet(&mut NetSyncIo::new(io, self.chain.deref()), *peer, packet_id, data);
 	}
 
 	fn connected(&self, io: &NetworkContext<SyncMessage>, peer: &PeerId) {

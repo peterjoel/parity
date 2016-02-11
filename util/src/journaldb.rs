@@ -47,8 +47,8 @@ impl Clone for JournalDB {
 	}
 }
 
-const LAST_ERA_KEY : [u8; 4] = [ b'l', b'a', b's', b't' ]; 
-const VERSION_KEY : [u8; 4] = [ b'j', b'v', b'e', b'r' ]; 
+const LAST_ERA_KEY: [u8; 4] = [b'l', b'a', b's', b't'];
+const VERSION_KEY: [u8; 4] = [b'j', b'v', b'e', b'r'];
 
 const DB_VERSION: u32 = 1;
 
@@ -63,11 +63,16 @@ impl JournalDB {
 	pub fn new_with_arc(backing: Arc<DB>) -> JournalDB {
 		if backing.iterator(IteratorMode::Start).next().is_some() {
 			match backing.get(&VERSION_KEY).map(|d| d.map(|v| decode::<u32>(&v))) {
-				Ok(Some(DB_VERSION)) => {},
-				v => panic!("Incompatible DB version, expected {}, got {:?}", DB_VERSION, v)
+				Ok(Some(DB_VERSION)) => {}
+				v => {
+					panic!("Incompatible DB version, expected {}, got {:?}",
+					       DB_VERSION,
+					       v)
+				}
 			}
 		} else {
-			backing.put(&VERSION_KEY, &encode(&DB_VERSION)).expect("Error writing version to database");
+			backing.put(&VERSION_KEY, &encode(&DB_VERSION))
+			       .expect("Error writing version to database");
 		}
 		let counters = JournalDB::read_counters(&backing);
 		JournalDB {
@@ -92,8 +97,12 @@ impl JournalDB {
 
 	/// Commit all recent insert operations and historical removals from the old era
 	/// to the backing database.
-	pub fn commit(&mut self, now: u64, id: &H256, end: Option<(u64, H256)>) -> Result<u32, UtilError> {
-		// journal format: 
+	pub fn commit(&mut self,
+	              now: u64,
+	              id: &H256,
+	              end: Option<(u64, H256)>)
+	              -> Result<u32, UtilError> {
+		// journal format:
 		// [era, 0] => [ id, [insert_0, ...], [remove_0, ...] ]
 		// [era, 1] => [ id, [insert_0, ...], [remove_0, ...] ]
 		// [era, n] => [ ... ]
@@ -101,11 +110,11 @@ impl JournalDB {
 		// TODO: store reclaim_period.
 
 		// when we make a new commit, we journal the inserts and removes.
-		// for each end_era that we journaled that we are no passing by, 
+		// for each end_era that we journaled that we are no passing by,
 		// we remove all of its removes assuming it is canonical and all
 		// of its inserts otherwise.
 		//
-		// We also keep reference counters for each key inserted in the journal to handle 
+		// We also keep reference counters for each key inserted in the journal to handle
 		// the following cases where key K must not be deleted from the DB when processing removals :
 		// Given H is the journal size in eras, 0 <= C <= H.
 		// Key K is removed in era A(N) and re-inserted in canonical era B(N + C).
@@ -124,22 +133,33 @@ impl JournalDB {
 			let mut last;
 
 			while try!(self.backing.get({
-				let mut r = RlpStream::new_list(2);
-				r.append(&now);
-				r.append(&index);
-				last = r.drain();
-				&last
-			})).is_some() {
+				      let mut r = RlpStream::new_list(2);
+				      r.append(&now);
+				      r.append(&index);
+				      last = r.drain();
+				      &last
+				     }))
+				      .is_some() {
 				index += 1;
 			}
 
 			let mut r = RlpStream::new_list(3);
-			let inserts: Vec<H256> = self.overlay.keys().iter().filter(|&(_, &c)| c > 0).map(|(key, _)| key.clone()).collect();
-			// Increase counter for each inserted key no matter if the block is canonical or not. 
+			let inserts: Vec<H256> = self.overlay
+			                             .keys()
+			                             .iter()
+			                             .filter(|&(_, &c)| c > 0)
+			                             .map(|(key, _)| key.clone())
+			                             .collect();
+			// Increase counter for each inserted key no matter if the block is canonical or not.
 			for i in &inserts {
 				*counters.entry(i.clone()).or_insert(0) += 1;
 			}
-			let removes: Vec<H256> = self.overlay.keys().iter().filter(|&(_, &c)| c < 0).map(|(key, _)| key.clone()).collect();
+			let removes: Vec<H256> = self.overlay
+			                             .keys()
+			                             .iter()
+			                             .filter(|&(_, &c)| c < 0)
+			                             .map(|(key, _)| key.clone())
+			                             .collect();
 			r.append(id);
 			r.append(&inserts);
 			r.append(&removes);
@@ -166,8 +186,7 @@ impl JournalDB {
 				if canon_id == rlp.val_at(0) {
 					to_remove.extend(rlp.at(2).iter().map(|r| r.as_val::<H256>()));
 					canon_inserts = inserts;
-				}
-				else {
+				} else {
 					to_remove.extend(inserts);
 				}
 				try!(batch.delete(&last));
@@ -177,12 +196,17 @@ impl JournalDB {
 			let canon_inserts = canon_inserts.drain(..).collect::<HashSet<_>>();
 			// Purge removed keys if they are not referenced and not re-inserted in the canon commit
 			let mut deletes = 0;
-			for h in to_remove.iter().filter(|h| !counters.contains_key(h) && !canon_inserts.contains(h)) {
+			for h in to_remove.iter()
+			                  .filter(|h| !counters.contains_key(h) && !canon_inserts.contains(h)) {
 				try!(batch.delete(&h));
 				deletes += 1;
 			}
 			try!(batch.put(&LAST_ERA_KEY, &encode(&end_era)));
-			trace!("JournalDB: delete journal for time #{}.{}, (canon was {}): {} entries", end_era, index, canon_id, deletes);
+			trace!("JournalDB: delete journal for time #{}.{}, (canon was {}): {} entries",
+			       end_era,
+			       index,
+			       canon_id,
+			       deletes);
 		}
 
 		// Commit overlay insertions
@@ -192,7 +216,8 @@ impl JournalDB {
 			let (key, (value, rc)) = i;
 			if rc > 0 {
 				assert!(rc == 1);
-				batch.put(&key.bytes(), &value).expect("Low-level database error. Some issue with your hard disk?");
+				batch.put(&key.bytes(), &value)
+				     .expect("Low-level database error. Some issue with your hard disk?");
 				ret += 1;
 			}
 			if rc < 0 {
@@ -223,7 +248,10 @@ impl JournalDB {
 	}
 
 	fn payload(&self, key: &H256) -> Option<Bytes> {
-		self.backing.get(&key.bytes()).expect("Low-level database error. Some issue with your hard disk?").map(|v| v.to_vec())
+		self.backing
+		    .get(&key.bytes())
+		    .expect("Low-level database error. Some issue with your hard disk?")
+		    .map(|v| v.to_vec())
 	}
 
 	fn read_counters(db: &DB) -> HashMap<H256, i32> {
@@ -233,18 +261,19 @@ impl JournalDB {
 			loop {
 				let mut index = 0usize;
 				while let Some(rlp_data) = db.get({
-					let mut r = RlpStream::new_list(2);
-					r.append(&era);
-					r.append(&index);
-					&r.drain()
-				}).expect("Low-level database error.") {
+					                             let mut r = RlpStream::new_list(2);
+					                             r.append(&era);
+					                             r.append(&index);
+					                             &r.drain()
+					                            })
+				                             .expect("Low-level database error.") {
 					let rlp = Rlp::new(&rlp_data);
 					let to_add: Vec<H256> = rlp.val_at(1);
 					for h in to_add {
 						*res.entry(h).or_insert(0) += 1;
 					}
 					index += 1;
-				};
+				}
 				if index == 0 {
 					break;
 				}
@@ -257,7 +286,7 @@ impl JournalDB {
 }
 
 impl HashDB for JournalDB {
-	fn keys(&self) -> HashMap<H256, i32> { 
+	fn keys(&self) -> HashMap<H256, i32> {
 		let mut ret: HashMap<H256, i32> = HashMap::new();
 		for (key, _) in self.backing.iterator(IteratorMode::Start) {
 			let h = H256::from_slice(key.deref());
@@ -271,33 +300,32 @@ impl HashDB for JournalDB {
 		ret
 	}
 
-	fn lookup(&self, key: &H256) -> Option<&[u8]> { 
+	fn lookup(&self, key: &H256) -> Option<&[u8]> {
 		let k = self.overlay.raw(key);
 		match k {
 			Some(&(ref d, rc)) if rc > 0 => Some(d),
 			_ => {
 				if let Some(x) = self.payload(key) {
 					Some(&self.overlay.denote(key, x).0)
-				}
-				else {
+				} else {
 					None
 				}
 			}
 		}
 	}
 
-	fn exists(&self, key: &H256) -> bool { 
+	fn exists(&self, key: &H256) -> bool {
 		self.lookup(key).is_some()
 	}
 
-	fn insert(&mut self, value: &[u8]) -> H256 { 
+	fn insert(&mut self, value: &[u8]) -> H256 {
 		self.overlay.insert(value)
 	}
 	fn emplace(&mut self, key: H256, value: Bytes) {
-		self.overlay.emplace(key, value); 
+		self.overlay.emplace(key, value);
 	}
-	fn kill(&mut self, key: &H256) { 
-		self.overlay.kill(key); 
+	fn kill(&mut self, key: &H256) {
+		self.overlay.kill(key);
 	}
 }
 

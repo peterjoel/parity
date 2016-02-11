@@ -67,7 +67,7 @@ fn test_get_swap_position() {
 
 /// Returns number of topcis to take from stack
 /// LOG0 -> 0
-pub fn get_log_topics (i: Instruction) -> usize {
+pub fn get_log_topics(i: Instruction) -> usize {
 	assert!(i >= LOG0 && i <= LOG4);
 	(i - LOG0) as usize
 }
@@ -98,11 +98,11 @@ pub enum GasPriceTier {
 	/// Multiparam or otherwise special
 	Special,
 	/// Invalid
-	Invalid
+	Invalid,
 }
 
 /// Returns the index in schedule for specific `GasPriceTier`
-pub fn get_tier_idx (tier: GasPriceTier) -> usize {
+pub fn get_tier_idx(tier: GasPriceTier) -> usize {
 	match tier {
 		GasPriceTier::Zero => 0,
 		GasPriceTier::Base => 1,
@@ -112,7 +112,7 @@ pub fn get_tier_idx (tier: GasPriceTier) -> usize {
 		GasPriceTier::High => 5,
 		GasPriceTier::Ext => 6,
 		GasPriceTier::Special => 7,
-		GasPriceTier::Invalid => 8
+		GasPriceTier::Invalid => 8,
 	}
 }
 
@@ -122,7 +122,7 @@ pub struct InstructionInfo {
 	pub args: usize,
 	pub ret: usize,
 	pub side_effects: bool,
-	pub tier: GasPriceTier
+	pub tier: GasPriceTier,
 }
 impl InstructionInfo {
 	pub fn new(name: &'static str, additional: usize, args: usize, ret: usize, side_effects: bool, tier: GasPriceTier) -> InstructionInfo {
@@ -132,145 +132,145 @@ impl InstructionInfo {
 			args: args,
 			ret: ret,
 			side_effects: side_effects,
-			tier: tier
+			tier: tier,
 		}
 	}
 }
 
 /// Return details about specific instruction
-pub fn get_info (instruction: Instruction) -> InstructionInfo {
+pub fn get_info(instruction: Instruction) -> InstructionInfo {
 	match instruction {
-		STOP => 		InstructionInfo::new("STOP",			0, 0, 0, true, GasPriceTier::Zero),
-		ADD => 			InstructionInfo::new("ADD",				0, 2, 1, false, GasPriceTier::VeryLow),
-		SUB => 			InstructionInfo::new("SUB",				0, 2, 1, false, GasPriceTier::VeryLow),
-		MUL => 			InstructionInfo::new("MUL",				0, 2, 1, false, GasPriceTier::Low),
-		DIV => 			InstructionInfo::new("DIV",				0, 2, 1, false, GasPriceTier::Low),
-		SDIV => 		InstructionInfo::new("SDIV",			0, 2, 1, false, GasPriceTier::Low),
-		MOD => 			InstructionInfo::new("MOD",				0, 2, 1, false, GasPriceTier::Low),
-		SMOD => 		InstructionInfo::new("SMOD",			0, 2, 1, false, GasPriceTier::Low),
-		EXP => 			InstructionInfo::new("EXP",				0, 2, 1, false, GasPriceTier::Special),
-		NOT => 			InstructionInfo::new("NOT",				0, 1, 1, false, GasPriceTier::VeryLow),
-		LT => 			InstructionInfo::new("LT",				0, 2, 1, false, GasPriceTier::VeryLow),
-		GT => 			InstructionInfo::new("GT",				0, 2, 1, false, GasPriceTier::VeryLow),
-		SLT => 			InstructionInfo::new("SLT",				0, 2, 1, false, GasPriceTier::VeryLow),
-		SGT => 			InstructionInfo::new("SGT",				0, 2, 1, false, GasPriceTier::VeryLow),
-		EQ => 			InstructionInfo::new("EQ",				0, 2, 1, false, GasPriceTier::VeryLow),
-		ISZERO => 		InstructionInfo::new("ISZERO",			0, 1, 1, false, GasPriceTier::VeryLow),
-		AND => 			InstructionInfo::new("AND",				0, 2, 1, false, GasPriceTier::VeryLow),
-		OR => 			InstructionInfo::new("OR",				0, 2, 1, false, GasPriceTier::VeryLow),
-		XOR => 			InstructionInfo::new("XOR",				0, 2, 1, false, GasPriceTier::VeryLow),
-		BYTE => 		InstructionInfo::new("BYTE",			0, 2, 1, false, GasPriceTier::VeryLow),
-		ADDMOD => 		InstructionInfo::new("ADDMOD",			0, 3, 1, false, GasPriceTier::Mid),
-		MULMOD => 		InstructionInfo::new("MULMOD",			0, 3, 1, false, GasPriceTier::Mid),
-		SIGNEXTEND => 	InstructionInfo::new("SIGNEXTEND",		0, 2, 1, false, GasPriceTier::Low),
-		SHA3 => 		InstructionInfo::new("SHA3",			0, 2, 1, false, GasPriceTier::Special),
-		ADDRESS => 		InstructionInfo::new("ADDRESS",			0, 0, 1, false, GasPriceTier::Base),
-		BALANCE => 		InstructionInfo::new("BALANCE",			0, 1, 1, false, GasPriceTier::Ext),
-		ORIGIN => 		InstructionInfo::new("ORIGIN",			0, 0, 1, false, GasPriceTier::Base),
-		CALLER => 		InstructionInfo::new("CALLER",			0, 0, 1, false, GasPriceTier::Base),
-		CALLVALUE => 	InstructionInfo::new("CALLVALUE",		0, 0, 1, false, GasPriceTier::Base),
-		CALLDATALOAD => InstructionInfo::new("CALLDATALOAD",	0, 1, 1, false, GasPriceTier::VeryLow),
-		CALLDATASIZE => InstructionInfo::new("CALLDATASIZE",	0, 0, 1, false, GasPriceTier::Base),
-		CALLDATACOPY => InstructionInfo::new("CALLDATACOPY",	0, 3, 0, true, GasPriceTier::VeryLow),
-		CODESIZE => 	InstructionInfo::new("CODESIZE",		0, 0, 1, false, GasPriceTier::Base),
-		CODECOPY => 	InstructionInfo::new("CODECOPY",		0, 3, 0, true, GasPriceTier::VeryLow),
-		GASPRICE => 	InstructionInfo::new("GASPRICE",		0, 0, 1, false, GasPriceTier::Base),
-		EXTCODESIZE => 	InstructionInfo::new("EXTCODESIZE",		0, 1, 1, false, GasPriceTier::Ext),
-		EXTCODECOPY => 	InstructionInfo::new("EXTCODECOPY",		0, 4, 0, true, GasPriceTier::Ext),
-		BLOCKHASH => 	InstructionInfo::new("BLOCKHASH",		0, 1, 1, false, GasPriceTier::Ext),
-		COINBASE => 	InstructionInfo::new("COINBASE",		0, 0, 1, false, GasPriceTier::Base),
-		TIMESTAMP => 	InstructionInfo::new("TIMESTAMP",		0, 0, 1, false, GasPriceTier::Base),
-		NUMBER => 		InstructionInfo::new("NUMBER",			0, 0, 1, false, GasPriceTier::Base),
-		DIFFICULTY => 	InstructionInfo::new("DIFFICULTY",		0, 0, 1, false, GasPriceTier::Base),
-		GASLIMIT => 	InstructionInfo::new("GASLIMIT",		0, 0, 1, false, GasPriceTier::Base),
-		POP => 			InstructionInfo::new("POP",				0, 1, 0, false, GasPriceTier::Base),
-		MLOAD => 		InstructionInfo::new("MLOAD",			0, 1, 1, false, GasPriceTier::VeryLow),
-		MSTORE => 		InstructionInfo::new("MSTORE",			0, 2, 0, true, GasPriceTier::VeryLow),
-		MSTORE8 => 		InstructionInfo::new("MSTORE8",			0, 2, 0, true, GasPriceTier::VeryLow),
-		SLOAD => 		InstructionInfo::new("SLOAD",			0, 1, 1, false, GasPriceTier::Special),
-		SSTORE => 		InstructionInfo::new("SSTORE",			0, 2, 0, true, GasPriceTier::Special),
-		JUMP => 		InstructionInfo::new("JUMP",			0, 1, 0, true, GasPriceTier::Mid),
-		JUMPI => 		InstructionInfo::new("JUMPI",			0, 2, 0, true, GasPriceTier::High),
-		PC => 			InstructionInfo::new("PC",				0, 0, 1, false, GasPriceTier::Base),
-		MSIZE => 		InstructionInfo::new("MSIZE",			0, 0, 1, false, GasPriceTier::Base),
-		GAS => 			InstructionInfo::new("GAS",				0, 0, 1, false, GasPriceTier::Base),
-		JUMPDEST => 	InstructionInfo::new("JUMPDEST",		0, 0, 0, true, GasPriceTier::Special),
-		PUSH1 => 		InstructionInfo::new("PUSH1",			1, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH2 => 		InstructionInfo::new("PUSH2",			2, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH3 => 		InstructionInfo::new("PUSH3",			3, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH4 => 		InstructionInfo::new("PUSH4",			4, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH5 => 		InstructionInfo::new("PUSH5",			5, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH6 => 		InstructionInfo::new("PUSH6",			6, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH7 => 		InstructionInfo::new("PUSH7",			7, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH8 => 		InstructionInfo::new("PUSH8",			8, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH9 => 		InstructionInfo::new("PUSH9",			9, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH10 => 		InstructionInfo::new("PUSH10",			10, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH11 => 		InstructionInfo::new("PUSH11",			11, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH12 => 		InstructionInfo::new("PUSH12",			12, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH13 => 		InstructionInfo::new("PUSH13",			13, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH14 => 		InstructionInfo::new("PUSH14",			14, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH15 => 		InstructionInfo::new("PUSH15",			15, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH16 => 		InstructionInfo::new("PUSH16",			16, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH17 => 		InstructionInfo::new("PUSH17",			17, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH18 => 		InstructionInfo::new("PUSH18",			18, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH19 => 		InstructionInfo::new("PUSH19",			19, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH20 => 		InstructionInfo::new("PUSH20",			20, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH21 => 		InstructionInfo::new("PUSH21",			21, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH22 => 		InstructionInfo::new("PUSH22",			22, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH23 => 		InstructionInfo::new("PUSH23",			23, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH24 => 		InstructionInfo::new("PUSH24",			24, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH25 => 		InstructionInfo::new("PUSH25",			25, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH26 => 		InstructionInfo::new("PUSH26",			26, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH27 => 		InstructionInfo::new("PUSH27",			27, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH28 => 		InstructionInfo::new("PUSH28",			28, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH29 => 		InstructionInfo::new("PUSH29",			29, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH30 => 		InstructionInfo::new("PUSH30",			30, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH31 => 		InstructionInfo::new("PUSH31",			31, 0, 1, false, GasPriceTier::VeryLow),
-		PUSH32 => 		InstructionInfo::new("PUSH32",			32, 0, 1, false, GasPriceTier::VeryLow),
-		DUP1 => 		InstructionInfo::new("DUP1",			0, 1, 2, false, GasPriceTier::VeryLow),
-		DUP2 => 		InstructionInfo::new("DUP2",			0, 2, 3, false, GasPriceTier::VeryLow),
-		DUP3 => 		InstructionInfo::new("DUP3",			0, 3, 4, false, GasPriceTier::VeryLow),
-		DUP4 => 		InstructionInfo::new("DUP4",			0, 4, 5, false, GasPriceTier::VeryLow),
-		DUP5 => 		InstructionInfo::new("DUP5",			0, 5, 6, false, GasPriceTier::VeryLow),
-		DUP6 => 		InstructionInfo::new("DUP6",			0, 6, 7, false, GasPriceTier::VeryLow),
-		DUP7 => 		InstructionInfo::new("DUP7",			0, 7, 8, false, GasPriceTier::VeryLow),
-		DUP8 => 		InstructionInfo::new("DUP8",			0, 8, 9, false, GasPriceTier::VeryLow),
-		DUP9 => 		InstructionInfo::new("DUP9",			0, 9, 10, false, GasPriceTier::VeryLow),
-		DUP10 => 		InstructionInfo::new("DUP10",			0, 10, 11, false, GasPriceTier::VeryLow),
-		DUP11 => 		InstructionInfo::new("DUP11",			0, 11, 12, false, GasPriceTier::VeryLow),
-		DUP12 => 		InstructionInfo::new("DUP12",			0, 12, 13, false, GasPriceTier::VeryLow),
-		DUP13 => 		InstructionInfo::new("DUP13",			0, 13, 14, false, GasPriceTier::VeryLow),
-		DUP14 => 		InstructionInfo::new("DUP14",			0, 14, 15, false, GasPriceTier::VeryLow),
-		DUP15 => 		InstructionInfo::new("DUP15",			0, 15, 16, false, GasPriceTier::VeryLow),
-		DUP16 => 		InstructionInfo::new("DUP16",			0, 16, 17, false, GasPriceTier::VeryLow),
-		SWAP1 => 		InstructionInfo::new("SWAP1",			0, 2, 2, false, GasPriceTier::VeryLow),
-		SWAP2 => 		InstructionInfo::new("SWAP2",			0, 3, 3, false, GasPriceTier::VeryLow),
-		SWAP3 => 		InstructionInfo::new("SWAP3",			0, 4, 4, false, GasPriceTier::VeryLow),
-		SWAP4 => 		InstructionInfo::new("SWAP4",			0, 5, 5, false, GasPriceTier::VeryLow),
-		SWAP5 => 		InstructionInfo::new("SWAP5",			0, 6, 6, false, GasPriceTier::VeryLow),
-		SWAP6 => 		InstructionInfo::new("SWAP6",			0, 7, 7, false, GasPriceTier::VeryLow),
-		SWAP7 => 		InstructionInfo::new("SWAP7",			0, 8, 8, false, GasPriceTier::VeryLow),
-		SWAP8 => 		InstructionInfo::new("SWAP8",			0, 9, 9, false, GasPriceTier::VeryLow),
-		SWAP9 => 		InstructionInfo::new("SWAP9",			0, 10, 10, false, GasPriceTier::VeryLow),
-		SWAP10 => 		InstructionInfo::new("SWAP10",			0, 11, 11, false, GasPriceTier::VeryLow),
-		SWAP11 => 		InstructionInfo::new("SWAP11",			0, 12, 12, false, GasPriceTier::VeryLow),
-		SWAP12 => 		InstructionInfo::new("SWAP12",			0, 13, 13, false, GasPriceTier::VeryLow),
-		SWAP13 => 		InstructionInfo::new("SWAP13",			0, 14, 14, false, GasPriceTier::VeryLow),
-		SWAP14 => 		InstructionInfo::new("SWAP14",			0, 15, 15, false, GasPriceTier::VeryLow),
-		SWAP15 => 		InstructionInfo::new("SWAP15",			0, 16, 16, false, GasPriceTier::VeryLow),
-		SWAP16 => 		InstructionInfo::new("SWAP16",			0, 17, 17, false, GasPriceTier::VeryLow),
-		LOG0 => 		InstructionInfo::new("LOG0",			0, 2, 0, true, GasPriceTier::Special),
-		LOG1 => 		InstructionInfo::new("LOG1",			0, 3, 0, true, GasPriceTier::Special),
-		LOG2 => 		InstructionInfo::new("LOG2",			0, 4, 0, true, GasPriceTier::Special),
-		LOG3 => 		InstructionInfo::new("LOG3",			0, 5, 0, true, GasPriceTier::Special),
-		LOG4 => 		InstructionInfo::new("LOG4",			0, 6, 0, true, GasPriceTier::Special),
-		CREATE => 		InstructionInfo::new("CREATE",			0, 3, 1, true, GasPriceTier::Special),
-		CALL => 		InstructionInfo::new("CALL",			0, 7, 1, true, GasPriceTier::Special),
-		CALLCODE => 	InstructionInfo::new("CALLCODE",		0, 7, 1, true, GasPriceTier::Special),
-		RETURN => 		InstructionInfo::new("RETURN",			0, 2, 0, true, GasPriceTier::Zero),
-		DELEGATECALL => InstructionInfo::new("DELEGATECALL",	0, 6, 1, true, GasPriceTier::Special),
-		SUICIDE => 		InstructionInfo::new("SUICIDE",			0, 1, 0, true, GasPriceTier::Zero),
-		_ => InstructionInfo::new("INVALID_INSTRUCTION", 0, 0, 0, false, GasPriceTier::Invalid)
+		STOP => InstructionInfo::new("STOP", 0, 0, 0, true, GasPriceTier::Zero),
+		ADD => InstructionInfo::new("ADD", 0, 2, 1, false, GasPriceTier::VeryLow),
+		SUB => InstructionInfo::new("SUB", 0, 2, 1, false, GasPriceTier::VeryLow),
+		MUL => InstructionInfo::new("MUL", 0, 2, 1, false, GasPriceTier::Low),
+		DIV => InstructionInfo::new("DIV", 0, 2, 1, false, GasPriceTier::Low),
+		SDIV => InstructionInfo::new("SDIV", 0, 2, 1, false, GasPriceTier::Low),
+		MOD => InstructionInfo::new("MOD", 0, 2, 1, false, GasPriceTier::Low),
+		SMOD => InstructionInfo::new("SMOD", 0, 2, 1, false, GasPriceTier::Low),
+		EXP => InstructionInfo::new("EXP", 0, 2, 1, false, GasPriceTier::Special),
+		NOT => InstructionInfo::new("NOT", 0, 1, 1, false, GasPriceTier::VeryLow),
+		LT => InstructionInfo::new("LT", 0, 2, 1, false, GasPriceTier::VeryLow),
+		GT => InstructionInfo::new("GT", 0, 2, 1, false, GasPriceTier::VeryLow),
+		SLT => InstructionInfo::new("SLT", 0, 2, 1, false, GasPriceTier::VeryLow),
+		SGT => InstructionInfo::new("SGT", 0, 2, 1, false, GasPriceTier::VeryLow),
+		EQ => InstructionInfo::new("EQ", 0, 2, 1, false, GasPriceTier::VeryLow),
+		ISZERO => InstructionInfo::new("ISZERO", 0, 1, 1, false, GasPriceTier::VeryLow),
+		AND => InstructionInfo::new("AND", 0, 2, 1, false, GasPriceTier::VeryLow),
+		OR => InstructionInfo::new("OR", 0, 2, 1, false, GasPriceTier::VeryLow),
+		XOR => InstructionInfo::new("XOR", 0, 2, 1, false, GasPriceTier::VeryLow),
+		BYTE => InstructionInfo::new("BYTE", 0, 2, 1, false, GasPriceTier::VeryLow),
+		ADDMOD => InstructionInfo::new("ADDMOD", 0, 3, 1, false, GasPriceTier::Mid),
+		MULMOD => InstructionInfo::new("MULMOD", 0, 3, 1, false, GasPriceTier::Mid),
+		SIGNEXTEND => InstructionInfo::new("SIGNEXTEND", 0, 2, 1, false, GasPriceTier::Low),
+		SHA3 => InstructionInfo::new("SHA3", 0, 2, 1, false, GasPriceTier::Special),
+		ADDRESS => InstructionInfo::new("ADDRESS", 0, 0, 1, false, GasPriceTier::Base),
+		BALANCE => InstructionInfo::new("BALANCE", 0, 1, 1, false, GasPriceTier::Ext),
+		ORIGIN => InstructionInfo::new("ORIGIN", 0, 0, 1, false, GasPriceTier::Base),
+		CALLER => InstructionInfo::new("CALLER", 0, 0, 1, false, GasPriceTier::Base),
+		CALLVALUE => InstructionInfo::new("CALLVALUE", 0, 0, 1, false, GasPriceTier::Base),
+		CALLDATALOAD => InstructionInfo::new("CALLDATALOAD", 0, 1, 1, false, GasPriceTier::VeryLow),
+		CALLDATASIZE => InstructionInfo::new("CALLDATASIZE", 0, 0, 1, false, GasPriceTier::Base),
+		CALLDATACOPY => InstructionInfo::new("CALLDATACOPY", 0, 3, 0, true, GasPriceTier::VeryLow),
+		CODESIZE => InstructionInfo::new("CODESIZE", 0, 0, 1, false, GasPriceTier::Base),
+		CODECOPY => InstructionInfo::new("CODECOPY", 0, 3, 0, true, GasPriceTier::VeryLow),
+		GASPRICE => InstructionInfo::new("GASPRICE", 0, 0, 1, false, GasPriceTier::Base),
+		EXTCODESIZE => InstructionInfo::new("EXTCODESIZE", 0, 1, 1, false, GasPriceTier::Ext),
+		EXTCODECOPY => InstructionInfo::new("EXTCODECOPY", 0, 4, 0, true, GasPriceTier::Ext),
+		BLOCKHASH => InstructionInfo::new("BLOCKHASH", 0, 1, 1, false, GasPriceTier::Ext),
+		COINBASE => InstructionInfo::new("COINBASE", 0, 0, 1, false, GasPriceTier::Base),
+		TIMESTAMP => InstructionInfo::new("TIMESTAMP", 0, 0, 1, false, GasPriceTier::Base),
+		NUMBER => InstructionInfo::new("NUMBER", 0, 0, 1, false, GasPriceTier::Base),
+		DIFFICULTY => InstructionInfo::new("DIFFICULTY", 0, 0, 1, false, GasPriceTier::Base),
+		GASLIMIT => InstructionInfo::new("GASLIMIT", 0, 0, 1, false, GasPriceTier::Base),
+		POP => InstructionInfo::new("POP", 0, 1, 0, false, GasPriceTier::Base),
+		MLOAD => InstructionInfo::new("MLOAD", 0, 1, 1, false, GasPriceTier::VeryLow),
+		MSTORE => InstructionInfo::new("MSTORE", 0, 2, 0, true, GasPriceTier::VeryLow),
+		MSTORE8 => InstructionInfo::new("MSTORE8", 0, 2, 0, true, GasPriceTier::VeryLow),
+		SLOAD => InstructionInfo::new("SLOAD", 0, 1, 1, false, GasPriceTier::Special),
+		SSTORE => InstructionInfo::new("SSTORE", 0, 2, 0, true, GasPriceTier::Special),
+		JUMP => InstructionInfo::new("JUMP", 0, 1, 0, true, GasPriceTier::Mid),
+		JUMPI => InstructionInfo::new("JUMPI", 0, 2, 0, true, GasPriceTier::High),
+		PC => InstructionInfo::new("PC", 0, 0, 1, false, GasPriceTier::Base),
+		MSIZE => InstructionInfo::new("MSIZE", 0, 0, 1, false, GasPriceTier::Base),
+		GAS => InstructionInfo::new("GAS", 0, 0, 1, false, GasPriceTier::Base),
+		JUMPDEST => InstructionInfo::new("JUMPDEST", 0, 0, 0, true, GasPriceTier::Special),
+		PUSH1 => InstructionInfo::new("PUSH1", 1, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH2 => InstructionInfo::new("PUSH2", 2, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH3 => InstructionInfo::new("PUSH3", 3, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH4 => InstructionInfo::new("PUSH4", 4, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH5 => InstructionInfo::new("PUSH5", 5, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH6 => InstructionInfo::new("PUSH6", 6, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH7 => InstructionInfo::new("PUSH7", 7, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH8 => InstructionInfo::new("PUSH8", 8, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH9 => InstructionInfo::new("PUSH9", 9, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH10 => InstructionInfo::new("PUSH10", 10, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH11 => InstructionInfo::new("PUSH11", 11, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH12 => InstructionInfo::new("PUSH12", 12, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH13 => InstructionInfo::new("PUSH13", 13, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH14 => InstructionInfo::new("PUSH14", 14, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH15 => InstructionInfo::new("PUSH15", 15, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH16 => InstructionInfo::new("PUSH16", 16, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH17 => InstructionInfo::new("PUSH17", 17, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH18 => InstructionInfo::new("PUSH18", 18, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH19 => InstructionInfo::new("PUSH19", 19, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH20 => InstructionInfo::new("PUSH20", 20, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH21 => InstructionInfo::new("PUSH21", 21, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH22 => InstructionInfo::new("PUSH22", 22, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH23 => InstructionInfo::new("PUSH23", 23, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH24 => InstructionInfo::new("PUSH24", 24, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH25 => InstructionInfo::new("PUSH25", 25, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH26 => InstructionInfo::new("PUSH26", 26, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH27 => InstructionInfo::new("PUSH27", 27, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH28 => InstructionInfo::new("PUSH28", 28, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH29 => InstructionInfo::new("PUSH29", 29, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH30 => InstructionInfo::new("PUSH30", 30, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH31 => InstructionInfo::new("PUSH31", 31, 0, 1, false, GasPriceTier::VeryLow),
+		PUSH32 => InstructionInfo::new("PUSH32", 32, 0, 1, false, GasPriceTier::VeryLow),
+		DUP1 => InstructionInfo::new("DUP1", 0, 1, 2, false, GasPriceTier::VeryLow),
+		DUP2 => InstructionInfo::new("DUP2", 0, 2, 3, false, GasPriceTier::VeryLow),
+		DUP3 => InstructionInfo::new("DUP3", 0, 3, 4, false, GasPriceTier::VeryLow),
+		DUP4 => InstructionInfo::new("DUP4", 0, 4, 5, false, GasPriceTier::VeryLow),
+		DUP5 => InstructionInfo::new("DUP5", 0, 5, 6, false, GasPriceTier::VeryLow),
+		DUP6 => InstructionInfo::new("DUP6", 0, 6, 7, false, GasPriceTier::VeryLow),
+		DUP7 => InstructionInfo::new("DUP7", 0, 7, 8, false, GasPriceTier::VeryLow),
+		DUP8 => InstructionInfo::new("DUP8", 0, 8, 9, false, GasPriceTier::VeryLow),
+		DUP9 => InstructionInfo::new("DUP9", 0, 9, 10, false, GasPriceTier::VeryLow),
+		DUP10 => InstructionInfo::new("DUP10", 0, 10, 11, false, GasPriceTier::VeryLow),
+		DUP11 => InstructionInfo::new("DUP11", 0, 11, 12, false, GasPriceTier::VeryLow),
+		DUP12 => InstructionInfo::new("DUP12", 0, 12, 13, false, GasPriceTier::VeryLow),
+		DUP13 => InstructionInfo::new("DUP13", 0, 13, 14, false, GasPriceTier::VeryLow),
+		DUP14 => InstructionInfo::new("DUP14", 0, 14, 15, false, GasPriceTier::VeryLow),
+		DUP15 => InstructionInfo::new("DUP15", 0, 15, 16, false, GasPriceTier::VeryLow),
+		DUP16 => InstructionInfo::new("DUP16", 0, 16, 17, false, GasPriceTier::VeryLow),
+		SWAP1 => InstructionInfo::new("SWAP1", 0, 2, 2, false, GasPriceTier::VeryLow),
+		SWAP2 => InstructionInfo::new("SWAP2", 0, 3, 3, false, GasPriceTier::VeryLow),
+		SWAP3 => InstructionInfo::new("SWAP3", 0, 4, 4, false, GasPriceTier::VeryLow),
+		SWAP4 => InstructionInfo::new("SWAP4", 0, 5, 5, false, GasPriceTier::VeryLow),
+		SWAP5 => InstructionInfo::new("SWAP5", 0, 6, 6, false, GasPriceTier::VeryLow),
+		SWAP6 => InstructionInfo::new("SWAP6", 0, 7, 7, false, GasPriceTier::VeryLow),
+		SWAP7 => InstructionInfo::new("SWAP7", 0, 8, 8, false, GasPriceTier::VeryLow),
+		SWAP8 => InstructionInfo::new("SWAP8", 0, 9, 9, false, GasPriceTier::VeryLow),
+		SWAP9 => InstructionInfo::new("SWAP9", 0, 10, 10, false, GasPriceTier::VeryLow),
+		SWAP10 => InstructionInfo::new("SWAP10", 0, 11, 11, false, GasPriceTier::VeryLow),
+		SWAP11 => InstructionInfo::new("SWAP11", 0, 12, 12, false, GasPriceTier::VeryLow),
+		SWAP12 => InstructionInfo::new("SWAP12", 0, 13, 13, false, GasPriceTier::VeryLow),
+		SWAP13 => InstructionInfo::new("SWAP13", 0, 14, 14, false, GasPriceTier::VeryLow),
+		SWAP14 => InstructionInfo::new("SWAP14", 0, 15, 15, false, GasPriceTier::VeryLow),
+		SWAP15 => InstructionInfo::new("SWAP15", 0, 16, 16, false, GasPriceTier::VeryLow),
+		SWAP16 => InstructionInfo::new("SWAP16", 0, 17, 17, false, GasPriceTier::VeryLow),
+		LOG0 => InstructionInfo::new("LOG0", 0, 2, 0, true, GasPriceTier::Special),
+		LOG1 => InstructionInfo::new("LOG1", 0, 3, 0, true, GasPriceTier::Special),
+		LOG2 => InstructionInfo::new("LOG2", 0, 4, 0, true, GasPriceTier::Special),
+		LOG3 => InstructionInfo::new("LOG3", 0, 5, 0, true, GasPriceTier::Special),
+		LOG4 => InstructionInfo::new("LOG4", 0, 6, 0, true, GasPriceTier::Special),
+		CREATE => InstructionInfo::new("CREATE", 0, 3, 1, true, GasPriceTier::Special),
+		CALL => InstructionInfo::new("CALL", 0, 7, 1, true, GasPriceTier::Special),
+		CALLCODE => InstructionInfo::new("CALLCODE", 0, 7, 1, true, GasPriceTier::Special),
+		RETURN => InstructionInfo::new("RETURN", 0, 2, 0, true, GasPriceTier::Zero),
+		DELEGATECALL => InstructionInfo::new("DELEGATECALL", 0, 6, 1, true, GasPriceTier::Special),
+		SUICIDE => InstructionInfo::new("SUICIDE", 0, 1, 0, true, GasPriceTier::Zero),
+		_ => InstructionInfo::new("INVALID_INSTRUCTION", 0, 0, 0, false, GasPriceTier::Invalid),
 	}
 }
 
@@ -301,7 +301,7 @@ pub const EXP: Instruction = 0x0a;
 pub const SIGNEXTEND: Instruction = 0x0b;
 
 /// less-than comparision
-pub const LT: Instruction = 0x10;		
+pub const LT: Instruction = 0x10;
 /// greater-than comparision
 pub const GT: Instruction = 0x11;
 /// signed less-than comparision
@@ -324,10 +324,10 @@ pub const NOT: Instruction = 0x19;
 pub const BYTE: Instruction = 0x1a;
 
 /// compute SHA3-256 hash
-pub const SHA3: Instruction = 0x20;	
+pub const SHA3: Instruction = 0x20;
 
 /// get address of currently executing account
-pub const ADDRESS: Instruction = 0x30;	
+pub const ADDRESS: Instruction = 0x30;
 /// get balance of the given account
 pub const BALANCE: Instruction = 0x31;
 /// get execution origination address
@@ -367,7 +367,7 @@ pub const DIFFICULTY: Instruction = 0x44;
 pub const GASLIMIT: Instruction = 0x45;
 
 /// remove item from stack
-pub const POP: Instruction = 0x50;		
+pub const POP: Instruction = 0x50;
 /// load word from memory
 pub const MLOAD: Instruction = 0x51;
 /// save word to memory
@@ -392,7 +392,7 @@ pub const GAS: Instruction = 0x5a;
 pub const JUMPDEST: Instruction = 0x5b;
 
 /// place 1 byte item on stack
-pub const PUSH1: Instruction = 0x60;	
+pub const PUSH1: Instruction = 0x60;
 /// place 2 byte item on stack
 pub const PUSH2: Instruction = 0x61;
 /// place 3 byte item on stack
@@ -457,7 +457,7 @@ pub const PUSH31: Instruction = 0x7e;
 pub const PUSH32: Instruction = 0x7f;
 
 /// copies the highest item in the stack to the top of the stack
-pub const DUP1: Instruction = 0x80;	
+pub const DUP1: Instruction = 0x80;
 /// copies the second highest item in the stack to the top of the stack
 pub const DUP2: Instruction = 0x81;
 /// copies the third highest item in the stack to the top of the stack
@@ -490,7 +490,7 @@ pub const DUP15: Instruction = 0x8e;
 pub const DUP16: Instruction = 0x8f;
 
 /// swaps the highest and second highest value on the stack
-pub const SWAP1: Instruction = 0x90;	
+pub const SWAP1: Instruction = 0x90;
 /// swaps the highest and third highest value on the stack
 pub const SWAP2: Instruction = 0x91;
 /// swaps the highest and 4th highest value on the stack
@@ -523,7 +523,7 @@ pub const SWAP15: Instruction = 0x9e;
 pub const SWAP16: Instruction = 0x9f;
 
 /// Makes a log entry; no topics.
-pub const LOG0: Instruction = 0xa0;	
+pub const LOG0: Instruction = 0xa0;
 /// Makes a log entry; 1 topic.
 pub const LOG1: Instruction = 0xa1;
 /// Makes a log entry; 2 topics.
@@ -533,10 +533,10 @@ pub const LOG3: Instruction = 0xa3;
 /// Makes a log entry; 4 topics.
 pub const LOG4: Instruction = 0xa4;
 /// Maximal number of topics for log instructions
-pub const MAX_NO_OF_TOPICS : usize = 4;
+pub const MAX_NO_OF_TOPICS: usize = 4;
 
 /// create a new account with associated code
-pub const CREATE: Instruction = 0xf0;	
+pub const CREATE: Instruction = 0xf0;
 /// message-call into an account
 pub const CALL: Instruction = 0xf1;
 /// message-call with another account's code only
@@ -546,5 +546,4 @@ pub const RETURN: Instruction = 0xf3;
 /// like CALLCODE but keeps caller's value and sender
 pub const DELEGATECALL: Instruction = 0xf4;
 /// halt execution and register account for later deletion
-pub const SUICIDE: Instruction = 0xff;	
-
+pub const SUICIDE: Instruction = 0xff;

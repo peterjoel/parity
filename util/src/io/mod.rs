@@ -31,16 +31,16 @@
 //!
 //! impl IoHandler<MyMessage> for MyHandler {
 //! 	fn initialize(&self, io: &IoContext<MyMessage>) {
-//!		io.register_timer(0, 1000).unwrap();
-//!	}
+//! 		io.register_timer(0, 1000).unwrap();
+//! 	}
 //!
-//!	fn timeout(&self, _io: &IoContext<MyMessage>, timer: TimerToken) {
-//!		println!("Timeout {}", timer);
-//!	}
+//! 	fn timeout(&self, _io: &IoContext<MyMessage>, timer: TimerToken) {
+//! 		println!("Timeout {}", timer);
+//! 	}
 //!
-//!	fn message(&self, _io: &IoContext<MyMessage>, message: &MyMessage) {
-//!		println!("Message {}", message.data);
-//!	}
+//! 	fn message(&self, _io: &IoContext<MyMessage>, message: &MyMessage) {
+//! 		println!("Message {}", message.data);
+//! 	}
 //! }
 //!
 //! fn main () {
@@ -64,9 +64,12 @@ pub enum IoError {
 	Mio(::std::io::Error),
 }
 
-impl<Message> From<::mio::NotifyError<service::IoMessage<Message>>> for IoError where Message: Send + Clone {
+impl<Message> From<::mio::NotifyError<service::IoMessage<Message>>> for IoError
+	where Message: Send + Clone
+{
 	fn from(_err: ::mio::NotifyError<service::IoMessage<Message>>) -> IoError {
-		IoError::Mio(::std::io::Error::new(::std::io::ErrorKind::ConnectionAborted, "Network IO notification error"))
+		IoError::Mio(::std::io::Error::new(::std::io::ErrorKind::ConnectionAborted,
+		                                   "Network IO notification error"))
 	}
 }
 
@@ -87,11 +90,22 @@ pub trait IoHandler<Message>: Send + Sync where Message: Send + Sync + Clone + '
 	/// Called when an IO stream can be written to
 	fn stream_writable(&self, _io: &IoContext<Message>, _stream: StreamToken) {}
 	/// Register a new stream with the event loop
-	fn register_stream(&self, _stream: StreamToken, _reg: Token, _event_loop: &mut EventLoop<IoManager<Message>>) {}
+	fn register_stream(&self,
+	                   _stream: StreamToken,
+	                   _reg: Token,
+	                   _event_loop: &mut EventLoop<IoManager<Message>>) {
+	}
 	/// Re-register a stream with the event loop
-	fn update_stream(&self, _stream: StreamToken, _reg: Token, _event_loop: &mut EventLoop<IoManager<Message>>) {}
+	fn update_stream(&self,
+	                 _stream: StreamToken,
+	                 _reg: Token,
+	                 _event_loop: &mut EventLoop<IoManager<Message>>) {
+	}
 	/// Deregister a stream. Called whenstream is removed from event loop
-	fn deregister_stream(&self, _stream: StreamToken, _event_loop: &mut EventLoop<IoManager<Message>>) {}
+	fn deregister_stream(&self,
+	                     _stream: StreamToken,
+	                     _event_loop: &mut EventLoop<IoManager<Message>>) {
+	}
 }
 
 pub use io::service::TimerToken;
@@ -112,7 +126,7 @@ mod tests {
 
 	#[derive(Clone)]
 	struct MyMessage {
-		data: u32
+		data: u32,
 	}
 
 	impl IoHandler<MyMessage> for MyHandler {
@@ -130,7 +144,7 @@ mod tests {
 	}
 
 	#[test]
-	fn test_service_register_handler () {
+	fn test_service_register_handler() {
 		let mut service = IoService::<MyMessage>::start().expect("Error creating network service");
 		service.register_handler(Arc::new(MyHandler)).unwrap();
 	}

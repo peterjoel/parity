@@ -24,12 +24,12 @@ impl<'a> From<UntrustedRlp<'a>> for Rlp<'a> {
 }
 
 /// Data-oriented view onto trusted rlp-slice.
-/// 
+///
 /// Unlikely to `UntrustedRlp` doesn't bother you with error
 /// handling. It assumes that you know what you are doing.
 #[derive(Debug)]
 pub struct Rlp<'a> {
-	rlp: UntrustedRlp<'a>
+	rlp: UntrustedRlp<'a>,
 }
 
 impl<'a> fmt::Display for Rlp<'a> {
@@ -38,18 +38,18 @@ impl<'a> fmt::Display for Rlp<'a> {
 	}
 }
 
-impl<'a, 'view> View<'a, 'view> for Rlp<'a> where 'a: 'view {
+impl<'a, 'view> View<'a, 'view> for Rlp<'a>
+    where 'a: 'view
+{
 	type Prototype = Prototype;
 	type PayloadInfo = PayloadInfo;
 	type Data = &'a [u8];
 	type Item = Rlp<'a>;
 	type Iter = RlpIterator<'a, 'view>;
-	
+
 	/// Create a new instance of `Rlp`
 	fn new(bytes: &'a [u8]) -> Rlp<'a> {
-		Rlp {
-			rlp: UntrustedRlp::new(bytes)
-		}
+		Rlp { rlp: UntrustedRlp::new(bytes) }
 	}
 
 	fn as_raw(&'view self) -> &'a [u8] {
@@ -104,39 +104,56 @@ impl<'a, 'view> View<'a, 'view> for Rlp<'a> where 'a: 'view {
 		self.into_iter()
 	}
 
-	fn as_val<T>(&self) -> Result<T, DecoderError> where T: RlpDecodable {
+	fn as_val<T>(&self) -> Result<T, DecoderError>
+		where T: RlpDecodable
+	{
 		self.rlp.as_val()
 	}
 
-	fn val_at<T>(&self, index: usize) -> Result<T, DecoderError> where T: RlpDecodable {
+	fn val_at<T>(&self, index: usize) -> Result<T, DecoderError>
+		where T: RlpDecodable
+	{
 		self.at(index).rlp.as_val()
 	}
 }
 
-impl <'a, 'view> Rlp<'a> where 'a: 'view {
-	fn view_as_val<T, R>(r: &R) -> T where R: View<'a, 'view>, T: RlpDecodable {
+impl<'a, 'view> Rlp<'a>
+    where 'a: 'view
+{
+	fn view_as_val<T, R>(r: &R) -> T
+		where R: View<'a, 'view>,
+		      T: RlpDecodable
+	{
 		let res: Result<T, DecoderError> = r.as_val();
 		res.unwrap_or_else(|_| panic!())
 	}
 
 	/// Decode into an object
-	pub fn as_val<T>(&self) -> T where T: RlpDecodable {
+	pub fn as_val<T>(&self) -> T
+		where T: RlpDecodable
+	{
 		Self::view_as_val(self)
 	}
 
 	/// Decode list item at given index into an object
-	pub fn val_at<T>(&self, index: usize) -> T where T: RlpDecodable {
+	pub fn val_at<T>(&self, index: usize) -> T
+		where T: RlpDecodable
+	{
 		Self::view_as_val(&self.at(index))
 	}
 }
 
 /// Iterator over trusted rlp-slice list elements.
-pub struct RlpIterator<'a, 'view> where 'a: 'view {
+pub struct RlpIterator<'a, 'view>
+	where 'a: 'view
+{
 	rlp: &'view Rlp<'a>,
-	index: usize
+	index: usize,
 }
 
-impl<'a, 'view> IntoIterator for &'view Rlp<'a> where 'a: 'view {
+impl<'a, 'view> IntoIterator for &'view Rlp<'a>
+    where 'a: 'view
+{
 	type Item = Rlp<'a>;
 	type IntoIter = RlpIterator<'a, 'view>;
 
@@ -153,7 +170,7 @@ impl<'a, 'view> Iterator for RlpIterator<'a, 'view> {
 
 	fn next(&mut self) -> Option<Rlp<'a>> {
 		let index = self.index;
-		let result = self.rlp.rlp.at(index).ok().map(| iter | { From::from(iter) });
+		let result = self.rlp.rlp.at(index).ok().map(From::from);
 		self.index += 1;
 		result
 	}
@@ -162,7 +179,10 @@ impl<'a, 'view> Iterator for RlpIterator<'a, 'view> {
 #[test]
 fn break_it() {
 	use common::*;
-	let h: Bytes = FromHex::from_hex("f84d0589010efbef67941f79b2a056e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421a0c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470").unwrap();
+	let h: Bytes = FromHex::from_hex("f84d0589010efbef67941f79b2a056e81f171bcc55a6ff8345e692c0f86\
+	                                  e5b48e01b996cadc001622fb5e363b421a0c5d2460186f7233c927e7db2\
+	                                  dcc703c0e500b653ca82273b7bfad8045d85a470")
+		               .unwrap();
 	let r: Rlp = Rlp::new(&h);
 	let u: U256 = r.val_at(1);
 	assert_eq!(format!("{}", u), "19526463837540678066");

@@ -26,7 +26,7 @@ use client::Client;
 #[derive(Clone)]
 pub enum SyncMessage {
 	/// New block has been imported into the blockchain
-	NewChainBlock(Bytes), //TODO: use Cow
+	NewChainBlock(Bytes), // TODO: use Cow
 	/// A block is ready 
 	BlockVerified,
 }
@@ -49,9 +49,7 @@ impl ClientService {
 		let mut dir = env::home_dir().unwrap();
 		dir.push(".parity");
 		let client = try!(Client::new(spec, &dir, net_service.io().channel()));
-		let client_io = Arc::new(ClientIoHandler {
-			client: client.clone()
-		});
+		let client_io = Arc::new(ClientIoHandler { client: client.clone() });
 		try!(net_service.io().register_handler(client_io));
 
 		Ok(ClientService {
@@ -83,7 +81,7 @@ impl ClientService {
 
 /// IO interface for the Client handler
 struct ClientIoHandler {
-	client: Arc<Client>
+	client: Arc<Client>,
 }
 
 const CLIENT_TICK_TIMER: TimerToken = 0;
@@ -107,8 +105,8 @@ impl IoHandler<NetSyncMessage> for ClientIoHandler {
 			match message {
 				&SyncMessage::BlockVerified => {
 					self.client.import_verified_blocks(&io.channel());
-				},
-				_ => {}, // ignore other messages
+				}
+				_ => {} // ignore other messages
 			}
 		}
 	}

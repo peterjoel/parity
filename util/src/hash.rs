@@ -21,7 +21,7 @@ use math::log2;
 use error::UtilError;
 use rand::Rng;
 use rand::os::OsRng;
-use bytes::{BytesConvertable,Populatable};
+use bytes::{BytesConvertable, Populatable};
 use from_json::*;
 use uint::{Uint, U256};
 use rustc_serialize::hex::ToHex;
@@ -50,7 +50,12 @@ pub trait FixedHash: Sized + BytesConvertable + Populatable + FromStr + Default 
 	/// When interpreting self as a bloom output, augment (bit-wise OR) with the a bloomed version of `b`.
 	fn shift_bloomed<'a, T>(&'a mut self, b: &T) -> &'a mut Self where T: FixedHash;
 	/// Same as `shift_bloomed` except that `self` is consumed and a new value returned.
-	fn with_bloomed<T>(mut self, b: &T) -> Self where T: FixedHash { self.shift_bloomed(b); self }
+	fn with_bloomed<T>(mut self, b: &T) -> Self
+		where T: FixedHash
+	{
+		self.shift_bloomed(b);
+		self
+	}
 	/// Bloom the current value using the bloom parameter `m`.
 	fn bloom_part<T>(&self, m: usize) -> T where T: FixedHash;
 	/// Check to see whether this hash, interpreted as a bloom, contains the value `b` when bloomed.
@@ -74,7 +79,7 @@ fn clean_0x(s: &str) -> &str {
 macro_rules! impl_hash {
 	($from: ident, $size: expr) => {
 		#[derive(Eq)]
-		/// Unformatted binary data of fixed length.
+/// Unformatted binary data of fixed length.
 		pub struct $from (pub [u8; $size]);
 
 		impl BytesConvertable for $from {
@@ -123,7 +128,7 @@ macro_rules! impl_hash {
 				$size
 			}
 
-			// TODO: remove once slice::clone_from_slice is stable
+// TODO: remove once slice::clone_from_slice is stable
 			#[inline]
 			fn clone_from_slice(&mut self, src: &[u8]) -> usize {
 				let min = ::std::cmp::min($size, src.len());
@@ -163,28 +168,28 @@ macro_rules! impl_hash {
 			}
 
 			fn bloom_part<T>(&self, m: usize) -> T where T: FixedHash {
-				// numbers of bits
-				// TODO: move it to some constant
+// numbers of bits
+// TODO: move it to some constant
 				let p = 3;
 
 				let bloom_bits = m * 8;
 				let mask = bloom_bits - 1;
 				let bloom_bytes = (log2(bloom_bits) + 7) / 8;
-				//println!("bb: {}", bloom_bytes);
+// println!("bb: {}", bloom_bytes);
 
-				// must be a power of 2
+// must be a power of 2
 				assert_eq!(m & (m - 1), 0);
-				// out of range
+// out of range
 				assert!(p * bloom_bytes <= $size);
 
-				// return type
+// return type
 				let mut ret = T::new();
 
-				// 'ptr' to out slice
+// 'ptr' to out slice
 				let mut ptr = 0;
 
-				// set p number of bits,
-				// p is equal 3 according to yellowpaper
+// set p number of bits,
+// p is equal 3 according to yellowpaper
 				for _ in 0..p {
 					let mut index = 0 as usize;
 					for _ in 0..bloom_bytes {
@@ -234,7 +239,7 @@ macro_rules! impl_hash {
 		}
 
 		impl serde::Serialize for $from {
-			fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error> 
+			fn serialize<S>(&self, serializer: &mut S) -> Result<(), S::Error>
 			where S: serde::Serializer {
 				let mut hex = "0x".to_owned();
 				hex.push_str(self.to_hex().as_ref());
@@ -249,7 +254,7 @@ macro_rules! impl_hash {
 
 				impl serde::de::Visitor for HashVisitor {
 					type Value = $from;
-					
+
 					fn visit_str<E>(&mut self, value: &str) -> Result<Self::Value, E> where E: serde::Error {
 						// 0x + len
 						if value.len() != 2 + $size * 2 {
@@ -422,7 +427,7 @@ macro_rules! impl_hash {
 			}
 		}
 
-		/// BitAnd on references
+/// BitAnd on references
 		impl <'a> BitAnd for &'a $from {
 			type Output = $from;
 
@@ -438,7 +443,7 @@ macro_rules! impl_hash {
 			}
 		}
 
-		/// Moving BitAnd
+/// Moving BitAnd
 		impl BitAnd for $from {
 			type Output = $from;
 
@@ -447,7 +452,7 @@ macro_rules! impl_hash {
 			}
 		}
 
-		/// BitXor on references
+/// BitXor on references
 		impl <'a> BitXor for &'a $from {
 			type Output = $from;
 
@@ -463,7 +468,7 @@ macro_rules! impl_hash {
 			}
 		}
 
-		/// Moving BitXor
+/// Moving BitXor
 		impl BitXor for $from {
 			type Output = $from;
 
@@ -473,12 +478,12 @@ macro_rules! impl_hash {
 		}
 
 		impl $from {
-			/// Get a hex representation.
+/// Get a hex representation.
 			pub fn hex(&self) -> String {
 				format!("{:?}", self)
 			}
 
-			/// Construct new instance equal to the bloomed value of `b`.
+/// Construct new instance equal to the bloomed value of `b`.
 			pub fn from_bloomed<T>(b: &T) -> Self where T: FixedHash { b.bloom_part($size) }
 		}
 
@@ -563,17 +568,16 @@ impl From<H256> for H64 {
 		}
 	}
 }
-/*
-impl<'_> From<&'_ H256> for Address {
-	fn from(value: &'_ H256) -> Address {
-		unsafe {
-			let mut ret: Address = ::std::mem::uninitialized();
-			::std::ptr::copy(value.as_ptr().offset(12), ret.as_mut_ptr(), 20);
-			ret
-		}
-	}
-}
-*/
+// impl<'_> From<&'_ H256> for Address {
+// fn from(value: &'_ H256) -> Address {
+// unsafe {
+// let mut ret: Address = ::std::mem::uninitialized();
+// ::std::ptr::copy(value.as_ptr().offset(12), ret.as_mut_ptr(), 20);
+// ret
+// }
+// }
+// }
+//
 impl From<Address> for H256 {
 	fn from(value: Address) -> H256 {
 		unsafe {
@@ -672,9 +676,20 @@ mod tests {
 	fn shift_bloomed() {
 		use sha3::Hashable;
 
-		let bloom = H2048::from_str("00000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002020000000000000000000000000000000000000000000008000000001000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap();
+		let bloom = H2048::from_str("000000000000000000000000000000000000000010000000000000000000\
+		                             000000000000000000000000000000000000000000000000000000000000\
+		                             000000000000000000000000000000000000000000000000000000000000\
+		                             000000000000000000020200000000000000000000000000000000000000\
+		                             000000080000000010000000000000000000000000000000000000000000\
+		                             000000000010000000000000000000000000000000000000000000000000\
+		                             000000000000000000000000000000000000000000000000000000000000\
+		                             000000000000000000000000000000000000000000000000000000000000\
+		                             00000000000000000000000000000000")
+			            .unwrap();
 		let address = Address::from_str("ef2d6d194084c2de36e0dabfce45d046b37d1106").unwrap();
-		let topic = H256::from_str("02c69be41d0b7e40352fc85be1cd65eb03d40ef8427a0ca4596b1ead9a00e9fc").unwrap();
+		let topic = H256::from_str("02c69be41d0b7e40352fc85be1cd65eb03d40ef8427a0ca4596b1ead9a00e\
+		                            9fc")
+			            .unwrap();
 
 		let mut my_bloom = H2048::new();
 		assert!(!my_bloom.contains_bloomed(&address.sha3()));
@@ -700,14 +715,18 @@ mod tests {
 
 	#[test]
 	fn from_u64() {
-		assert_eq!(H128::from(0x1234567890abcdef), H128::from_str("00000000000000001234567890abcdef").unwrap());
-		assert_eq!(H64::from(0x1234567890abcdef), H64::from_str("1234567890abcdef").unwrap());
-		assert_eq!(H32::from(0x1234567890abcdef), H32::from_str("90abcdef").unwrap());
+		assert_eq!(H128::from(0x1234567890abcdef),
+		           H128::from_str("00000000000000001234567890abcdef").unwrap());
+		assert_eq!(H64::from(0x1234567890abcdef),
+		           H64::from_str("1234567890abcdef").unwrap());
+		assert_eq!(H32::from(0x1234567890abcdef),
+		           H32::from_str("90abcdef").unwrap());
 	}
 
 	#[test]
 	fn from_str() {
-		assert_eq!(H64::from(0x1234567890abcdef), H64::from("0x1234567890abcdef"));
+		assert_eq!(H64::from(0x1234567890abcdef),
+		           H64::from("0x1234567890abcdef"));
 		assert_eq!(H64::from(0x1234567890abcdef), H64::from("1234567890abcdef"));
 		assert_eq!(H64::from(0x234567890abcdef), H64::from("0x234567890abcdef"));
 		// too short.
@@ -718,7 +737,8 @@ mod tests {
 	fn from_and_to_u256() {
 		let u: U256 = x!(0x123456789abcdef0u64);
 		let h = H256::from(u);
-		assert_eq!(H256::from(u), H256::from("000000000000000000000000000000000000000000000000123456789abcdef0"));
+		assert_eq!(H256::from(u),
+		           H256::from("000000000000000000000000000000000000000000000000123456789abcdef0"));
 		let h_ref = H256::from(&u);
 		assert_eq!(h, h_ref);
 		let r_ref: U256 = From::from(&h);
@@ -727,4 +747,3 @@ mod tests {
 		assert_eq!(r, u);
 	}
 }
-

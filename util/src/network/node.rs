@@ -16,7 +16,7 @@
 
 use std::net::{SocketAddr, ToSocketAddrs};
 use std::hash::{Hash, Hasher};
-use std::str::{FromStr};
+use std::str::FromStr;
 use hash::*;
 use rlp::*;
 use time::Tm;
@@ -33,7 +33,7 @@ pub struct NodeEndpoint {
 	/// Address as string (can be host name).
 	pub address_str: String,
 	/// Conneciton port.
-	pub udp_port: u16
+	pub udp_port: u16,
 }
 
 impl FromStr for NodeEndpoint {
@@ -43,13 +43,15 @@ impl FromStr for NodeEndpoint {
 	fn from_str(s: &str) -> Result<NodeEndpoint, UtilError> {
 		let address = s.to_socket_addrs().map(|mut i| i.next());
 		match address {
-			Ok(Some(a)) => Ok(NodeEndpoint {
-				address: a,
-				address_str: s.to_owned(),
-				udp_port: a.port()
-			}),
+			Ok(Some(a)) => {
+				Ok(NodeEndpoint {
+					address: a,
+					address_str: s.to_owned(),
+					udp_port: a.port(),
+				})
+			}
 			Ok(_) => Err(UtilError::AddressResolve(None)),
-			Err(e) => Err(UtilError::AddressResolve(Some(e)))
+			Err(e) => Err(UtilError::AddressResolve(Some(e))),
 		}
 	}
 }
@@ -57,7 +59,7 @@ impl FromStr for NodeEndpoint {
 #[derive(PartialEq, Eq, Copy, Clone)]
 pub enum PeerType {
 	Required,
-	Optional
+	Optional,
 }
 
 pub struct Node {
@@ -71,9 +73,9 @@ impl FromStr for Node {
 	type Err = UtilError;
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
 		let (id, endpoint) = if &s[0..8] == "enode://" && s.len() > 136 && &s[136..137] == "@" {
-			(try!(NodeId::from_str(&s[8..136])), try!(NodeEndpoint::from_str(&s[137..])))
-		}
-		else {
+			(try!(NodeId::from_str(&s[8..136])),
+			 try!(NodeEndpoint::from_str(&s[137..])))
+		} else {
 			(NodeId::new(), try!(NodeEndpoint::from_str(s)))
 		};
 
@@ -91,10 +93,12 @@ impl PartialEq for Node {
 		self.id == other.id
 	}
 }
-impl Eq for Node { }
+impl Eq for Node {}
 
 impl Hash for Node {
-	fn hash<H>(&self, state: &mut H) where H: Hasher {
+	fn hash<H>(&self, state: &mut H)
+		where H: Hasher
+	{
 		self.id.hash(state)
 	}
 }
@@ -112,23 +116,27 @@ mod tests {
 		assert!(endpoint.is_ok());
 		let v4 = match endpoint.unwrap().address {
 			SocketAddr::V4(v4address) => v4address,
-			_ => panic!("should ve v4 address")
+			_ => panic!("should ve v4 address"),
 		};
 		assert_eq!(SocketAddrV4::new(Ipv4Addr::new(123, 99, 55, 44), 7770), v4);
 	}
 
 	#[test]
 	fn node_parse() {
-		let node = Node::from_str("enode://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c@22.99.55.44:7770");
+		let node = Node::from_str("enode://a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284\
+		                           339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0\
+		                           cb6d3331163c@22.99.55.44:7770");
 		assert!(node.is_ok());
 		let node = node.unwrap();
 		let v4 = match node.endpoint.address {
 			SocketAddr::V4(v4address) => v4address,
-			_ => panic!("should ve v4 address")
+			_ => panic!("should ve v4 address"),
 		};
 		assert_eq!(SocketAddrV4::new(Ipv4Addr::new(22, 99, 55, 44), 7770), v4);
-		assert_eq!(
-			H512::from_str("a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968eef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d3331163c").unwrap(),
-			node.id);
+		assert_eq!(H512::from_str("a979fb575495b8d6db44f750317d0f4622bf4c2aa3365d6af7c284339968e\
+		                           ef29b69ad0dce72a4d8db5ebb4968de0e3bec910127f134779fbcb0cb6d33\
+		                           31163c")
+			           .unwrap(),
+		           node.id);
 	}
 }

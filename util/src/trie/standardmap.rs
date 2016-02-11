@@ -76,7 +76,11 @@ impl StandardMap {
 
 	/// Get a random word of, at least `min_count` bytes, at most `min_count` + `journal_count` bytes.
 	/// Each byte is an item from `alphabet`. `seed` is mutated pseudoramdonly and used.
-	fn random_word(alphabet: &[u8], min_count: usize, journal_count: usize, seed: &mut H256) -> Vec<u8> {
+	fn random_word(alphabet: &[u8],
+	               min_count: usize,
+	               journal_count: usize,
+	               seed: &mut H256)
+	               -> Vec<u8> {
 		assert!(min_count + journal_count <= 32);
 		*seed = seed.sha3();
 		let r = min_count + (seed.bytes()[31] as usize % (journal_count + 1));
@@ -99,9 +103,14 @@ impl StandardMap {
 				Alphabet::All => Self::random_bytes(self.min_key, self.journal_key, &mut seed),
 				Alphabet::Low => Self::random_word(low, self.min_key, self.journal_key, &mut seed),
 				Alphabet::Mid => Self::random_word(mid, self.min_key, self.journal_key, &mut seed),
-				Alphabet::Custom(ref a) => Self::random_word(&a, self.min_key, self.journal_key, &mut seed),
+				Alphabet::Custom(ref a) => {
+					Self::random_word(&a, self.min_key, self.journal_key, &mut seed)
+				}
 			};
-			let v = match self.value_mode { ValueMode::Mirror => k.clone(), ValueMode::Random => Self::random_value(&mut seed) };
+			let v = match self.value_mode {
+				ValueMode::Mirror => k.clone(),
+				ValueMode::Random => Self::random_value(&mut seed),
+			};
 			d.push((k, v))
 		}
 		d
