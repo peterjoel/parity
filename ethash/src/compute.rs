@@ -23,6 +23,7 @@ use primal::is_prime;
 use std::mem;
 use std::ptr;
 use sha3;
+use std::sync::Mutex;
 use std::slice;
 use std::path::PathBuf;
 use std::io::{Read, Write, self};
@@ -82,9 +83,20 @@ impl Node {
 
 pub type H256 = [u8; 32];
 
+pub struct SeedHashCached {
+    epoch: u64,
+    seed_hash: H256,
+}
+impl SeedHashCached {
+    fn new(epoch: u64, seed_hash: H256) -> SeedHashCached {
+        SeedHashCached { epoch: epoch, seed_hash: seed_hash }
+    }
+}
+
 pub struct Light {
 	block_number: u64,
 	cache: Vec<Node>,
+    seedhash_cached: Mutex<SeedHashCached>,
 }
 
 /// Light cache structur
@@ -101,17 +113,18 @@ impl Light {
 		light_compute(self, header_hash, nonce)
 	}
 
-	pub fn file_path(block_number: u64) -> PathBuf {
+	fn file_path(seed_hash: &H256) -> PathBuf {
 		let mut home = ::std::env::home_dir().unwrap();
 		home.push(".ethash");
 		home.push("light");
-		let seed_hash = get_seedhash(block_number);
-		home.push(to_hex(&seed_hash));
+		home.push(to_hex(seed_hash));
 		home
 	}
 
 	pub fn from_file(block_number: u64) -> io::Result<Light> {
-		let path = Light::file_path(block_number);
+        let epoch = get_epoch(block_number);
+        let seed_hash = calc_epoch_seedhash(epoch);
+		let path = Light::file_path(&seed_hash);
 		let mut file = try!(File::open(path));
 
 		let cache_size = get_cache_size(block_number);
@@ -126,11 +139,13 @@ impl Light {
 		Ok(Light {
 			cache: nodes,
 			block_number: block_number,
+            seedhash_cached: Mutex::new(SeedHashCached::new(epoch, seed_hash)),
 		})
 	}
 
 	pub fn to_file(&self) -> io::Result<()> {
-		let path = Light::file_path(self.block_number);
+        let seed_hash = self.get_seedhash(self.block_number);
+		let path = Light::file_path(&seed_hash);
 		try!(fs::create_dir_all(path.parent().unwrap()));
 		let mut file = try!(File::create(path));
 
@@ -139,6 +154,15 @@ impl Light {
 		try!(file.write(buf));
 		Ok(())
 	}
+
+    pub fn get_seedhash(&self, block_number: u64) -> H256 {
+        let epoch = get_epoch(block_number);
+        let mut cached = self.seedhash_cached.lock().unwrap();
+        if cached.epoch == epoch {
+            *cached = SeedHashCached::new(epoch, calc_epoch_seedhash(epoch));
+        }
+        cached.seed_hash
+    }
 }
 
 #[inline]
@@ -153,7 +177,7 @@ fn sha3_512(input: &[u8], output: &mut [u8]) {
 
 #[inline]
 fn get_cache_size(block_number: u64) -> usize {
-    let mut sz: u64 = CACHE_BYTES_INIT + CACHE_BYTES_GROWTH * (block_number / ETHASH_EPOCH_LENGTH);
+    let mut sz: u64 = CACHE_BYTES_INIT + CACHE_BYTES_GROWTH * get_epoch(block_number);
     sz = sz - NODE_BYTES as u64;
     while !is_prime(sz / NODE_BYTES as u64) {
         sz = sz - 2 * NODE_BYTES as u64;
@@ -163,7 +187,7 @@ fn get_cache_size(block_number: u64) -> usize {
 
 #[inline]
 fn get_data_size(block_number: u64) -> usize {
-    let mut sz: u64 = DATASET_BYTES_INIT + DATASET_BYTES_GROWTH * (block_number / ETHASH_EPOCH_LENGTH);
+    let mut sz: u64 = DATASET_BYTES_INIT + DATASET_BYTES_GROWTH * get_epoch(block_number);
     sz = sz - ETHASH_MIX_BYTES as u64;
     while !is_prime(sz / ETHASH_MIX_BYTES as u64) {
         sz = sz - 2 * ETHASH_MIX_BYTES as u64;
@@ -174,13 +198,23 @@ fn get_data_size(block_number: u64) -> usize {
 #[inline]
 /// Given the `block_number`, determine the seed hash for Ethash.
 pub fn get_seedhash(block_number: u64) -> H256 {
-	let epochs = block_number / ETHASH_EPOCH_LENGTH;
-	let mut ret: H256 = [0u8; 32];
-	for _ in 0..epochs {
-		unsafe { sha3::sha3_256(ret[..].as_mut_ptr(), 32, ret[..].as_ptr(), 32) };
-	}
-	ret
+    calc_epoch_seedhash(get_epoch(block_number))
 }
+
+#[inline]
+fn calc_epoch_seedhash(epochs: u64) -> H256 {
+    let mut ret: H256 = [0u8; 32];
+    for _ in 0..epochs {
+        unsafe { sha3::sha3_256(ret[..].as_mut_ptr(), 32, ret[..].as_ptr(), 32) };
+    }
+    ret
+}
+
+#[inline]
+fn get_epoch(block_number: u64) -> u64 {
+    block_number / ETHASH_EPOCH_LENGTH
+}
+
 
 /// Difficulty quick check for POW preverification
 ///
@@ -287,7 +321,8 @@ fn calculate_dag_item(node_index: u32, light: &Light) -> Node {
 }
 
 fn light_new(block_number: u64) -> Light {
-	let seedhash = get_seedhash(block_number);
+    let epoch = get_epoch(block_number);
+	let seed_hash = calc_epoch_seedhash(epoch);
 	let cache_size = get_cache_size(block_number);
 
 	if cache_size % NODE_BYTES != 0 {
@@ -298,7 +333,7 @@ fn light_new(block_number: u64) -> Light {
 	let mut nodes = Vec::with_capacity(num_nodes);
 	nodes.resize(num_nodes, Node::default());
 	unsafe {
-		sha3_512(&seedhash[0..32], &mut nodes.get_unchecked_mut(0).bytes);
+		sha3_512(&seed_hash[0..32], &mut nodes.get_unchecked_mut(0).bytes);
 		for i in 1..num_nodes {
 			sha3::sha3_512(nodes.get_unchecked_mut(i).bytes.as_mut_ptr(), NODE_BYTES, nodes.get_unchecked(i - 1).bytes.as_ptr(), NODE_BYTES);
 		}
@@ -318,6 +353,7 @@ fn light_new(block_number: u64) -> Light {
 	Light {
 		cache: nodes,
 		block_number: block_number,
+        seedhash_cached: Mutex::new(SeedHashCached::new(epoch, seed_hash)),
 	}
 }
 
