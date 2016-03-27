@@ -21,7 +21,6 @@
 
 use primal::is_prime;
 use std::cell::Cell;
-use std::sync::Mutex;
 use std::mem;
 use std::ptr;
 use sha3;
@@ -87,7 +86,7 @@ pub type H256 = [u8; 32];
 pub struct Light {
 	block_number: u64,
 	cache: Vec<Node>,
-	seed_compute: Mutex<SeedHashCompute>,
+	seed_compute: SeedHashCompute,
 }
 
 /// Light cache structur
@@ -129,13 +128,12 @@ impl Light {
 		Ok(Light {
 			cache: nodes,
 			block_number: block_number,
-			seed_compute: Mutex::new(seed_compute),
+			seed_compute: seed_compute,
 		})
 	}
 
 	pub fn to_file(&self) -> io::Result<()> {
-		let seed_compute = self.seed_compute.lock().unwrap();
-		let path = Light::file_path(seed_compute.get_seedhash(self.block_number));
+		let path = Light::file_path(self.seed_compute.get_seedhash(self.block_number));
 		try!(fs::create_dir_all(path.parent().unwrap()));
 		let mut file = try!(File::create(path));
 
@@ -358,7 +356,7 @@ fn light_new(block_number: u64) -> Light {
 	Light {
 		cache: nodes,
 		block_number: block_number,
-		seed_compute: Mutex::new(seed_compute),
+		seed_compute: seed_compute,
 	}
 }
 
